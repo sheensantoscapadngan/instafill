@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "virtualenv\\instafill\\Scripts\\python.exe",
+    "git.ignoreLimitWarning": true
+}
