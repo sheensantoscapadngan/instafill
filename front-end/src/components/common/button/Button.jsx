@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './Button.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 const STYLES = [
     'btn--primary--solid',
     'btn--warning--solid',
@@ -26,8 +26,8 @@ export const Button = ({
 
     const checkButtonSize = SIZES.includes(buttonSize) ? buttonSize: SIZES[0];
     return(
-        <button className={`btn ${checkButtonStyle} ${checkButtonSize}`} onClick={onClick} type={type}> 
-            <h1>button</h1>{children}
+        <button className={`btn ${checkButtonStyle} ${checkButtonSize}`} onClick={onClick} type={type} children={children}> 
+            
         </button>
     )
 };

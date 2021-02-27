@@ -2,6 +2,9 @@ import { FaBars } from 'react-icons/fa';
 import { NavLink as Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+
+/*css/styles of navbar*/
+
 export const Nav = styled.nav`
   height: 80px;
   display: flex;
@@ -27,6 +30,7 @@ export const NavLink = styled(Link)`
   }
 
   white-space: nowrap;
+  }
 `;
 
 export const Bars = styled(FaBars)`
