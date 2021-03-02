@@ -10,12 +10,12 @@ const Navbar = () =>{
     return(
     <>
         <Nav>
-        <NavLink to="/home">
+        <NavLink to="/">
             <h1> InstaFill </h1>
         </NavLink>
         <Bars/>
         
-            <NavLink to="/home" activeStyle>
+            <NavLink to="/" activeStyle>
                 Form Magic!
             </NavLink>
 
@@ -40,5 +40,7 @@ const Navbar = () =>{
     );
 
 };
+
+
 
 export default Navbar;

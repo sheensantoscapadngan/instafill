@@ -6,23 +6,3 @@
   padding: 0;
 }
 
-/*button stylings*/
-
-.buttons {
-  text-align: center;
-  margin-top: 10%;
-}
-.smallerText {
-  font-size: 15px;
-}
-.biggerText {
-  font-size: 67%;
-  font-weight: 500;
-}
-
-/*filler text to even out boxes*/
-
-.filler {
-  color: white;
-  font-size: 15px;
-}
