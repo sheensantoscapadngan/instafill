@@ -28,7 +28,6 @@ export const NavLink = styled(Link)`
   &.active {
     color: white;
   }
-
   white-space: nowrap;
   }
 `;

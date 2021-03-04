@@ -20,7 +20,7 @@ export const Button = ({
     onClick,
     buttonStyle,
     buttonSize,
-}) =>{
+}) => {
 
     const checkButtonStyle = STYLES.includes(buttonStyle) ? buttonStyle : STYLES[0];
 
@@ -31,4 +31,5 @@ export const Button = ({
         </button>
     )
 };
+
 export default Button;
