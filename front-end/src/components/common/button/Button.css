@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+
+/*button color types*/
+
+:root {
+  --primary: #4628ff;
+  --warning: #ffd028;
+  --danger: #eb3f27;
+  --success: #75fa83;
+  --white: #fdfdfd;
+  --dark: #181717;
+}
+/*button properties*/
+
+.btn {
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  font-weight: 400;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  outline: none;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+/*button colors*/
+
+.btn--primary--solid {
+  background-color: var(--white);
+  color: var(--dark);
+  border: black;
+}
+
+.btn--warning--solid {
+  background-color: var(--warning);
+  color: var(--dark);
+  border: none;
+}
+.btn--danger--solid {
+  background-color: var(--danger);
+  color: var(--white);
+  border: none;
+}
+.btn--success--solid {
+  background-color: var(--success);
+  color: var(--white);
+  border: none;
+}
+.btn--primary--outline {
+  background-color: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+.btn--warning--outline {
+  background-color: transparent;
+  border: 2px solid var(--warning);
+  color: var(--warning);
+}
+.btn--danger--outline {
+  background-color: transparent;
+  border: 2px solid var(--danger);
+  color: var(--danger);
+}
+.btn--success--outline {
+  background-color: transparent;
+  border: 2px solid var(--success);
+  color: var(--success);
+}
+
+/*button sizes*/
+
+.btn--medium {
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+.btn--large {
+  height: 260px;
+  width: 350px;
+  padding-bottom: 17px;
+  font-size: 40px;
+}
