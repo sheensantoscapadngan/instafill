@@ -31,22 +31,20 @@ const Container = styled.div`
 
 function Dropzone(props) {
 
-
   const onDrop = useCallback(acceptedFiles =>{
     let formData = new FormData()
-    formData.append('uploadedFiles',acceptedFiles)
-    console.log(acceptedFiles)
-    console.log(formData)
+    formData.append('pdf',acceptedFiles[0])
+    formData.append('master',acceptedFiles[1])
 
     axios({
       url: '/process',
       method: "POST",
       headers:{
-        authorization:'insert token'
+        'Content-Type': 'multipart/form-data'
       },
       data: formData
     }).then((res)=>{
-
+      
     })
 
   }, [])
@@ -58,7 +56,6 @@ function Dropzone(props) {
     isDragAccept,
     isDragReject,
   } = useDropzone({accept: '.pdf, .txt',onDrop});
-
 
 
 

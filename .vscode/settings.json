@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "virtualenv\\instafill\\Scripts\\python.exe",
+    "python.pythonPath": "C:\\ProgramData\\Anaconda3\\envs\\instafill_backend\\python.exe",
     "git.ignoreLimitWarning": true
 }
