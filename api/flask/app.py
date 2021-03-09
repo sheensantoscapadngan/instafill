@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from main_process import process_request
+from api.main_process import process_request
 from api.document_helpers.pdf_helper import save_pdf_and_master
 from flask import Flask, jsonify, request
 
