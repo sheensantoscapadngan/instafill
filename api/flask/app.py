@@ -4,8 +4,11 @@ from api.document_helpers.pdf_helper import save_pdf_and_master
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+
+'''
 app.model = SentenceTransformer(
     r'E:\PROJECTS\instafill_backend\api\instafill_text\model\field_model1')
+'''
 
 
 @app.route('/')
