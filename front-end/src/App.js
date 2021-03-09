@@ -16,9 +16,6 @@ function App() {
         <Route exact path='/' component={MainPage}/>
         <Route exact path='/createMaster' component={createMaster}/>
       </Switch>
-
-
-  
     </Router>
   );
 }

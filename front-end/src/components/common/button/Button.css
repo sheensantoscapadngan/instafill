@@ -79,6 +79,8 @@
 }
 
 .btn--large {
-  padding: 20px 20px;
+  height: 260px;
+  width: 350px;
+  padding-bottom: 17px;
   font-size: 40px;
 }
