@@ -1,81 +1,83 @@
-aiohttp @ file:///D:/bld/aiohttp_1614281171385/work
+aiohttp==3.7.4
 astroid==2.4.2
 async-timeout==3.0.1
-attrs @ file:///home/conda/feedstock_root/build_artifacts/attrs_1605083924122/work
+attrs==20.3.0
 autopep8==1.5.3
 boto==2.49.0
-boto3 @ file:///home/conda/feedstock_root/build_artifacts/boto3_1614382476053/work
-botocore @ file:///home/conda/feedstock_root/build_artifacts/botocore_1614377651630/work
+boto3==1.17.17
+botocore==1.20.17
 brotlipy==0.7.0
 bz2file==0.98
-cachetools @ file:///home/conda/feedstock_root/build_artifacts/cachetools_1611555765219/work
+cachetools==4.2.1
 certifi==2020.12.5
-cffi @ file:///D:/bld/cffi_1613414034267/work
-chardet @ file:///D:/bld/chardet_1610093644405/work
+cffi==1.14.5
+chardet==4.0.0
 click==7.1.2
 colorama==0.4.3
-cryptography @ file:///D:/bld/cryptography_1612994017605/work
+cryptography==3.4.4
 dataclasses==0.6
 filelock==3.0.12
 Flask==1.1.2
 future==0.18.2
-gensim @ file:///D:/bld/gensim_1589441301799/work
-google-api-core @ file:///home/conda/feedstock_root/build_artifacts/google-api-core-split_1611955420232/work
-google-auth @ file:///home/conda/feedstock_root/build_artifacts/google-auth_1608136875028/work
-google-cloud-core @ file:///home/conda/feedstock_root/build_artifacts/google-cloud-core_1608136972897/work
-google-cloud-storage @ file:///home/conda/feedstock_root/build_artifacts/google-cloud-storage_1609965824883/work
+gensim==3.8.3
+google-api-core==1.25.1
+google-auth==1.24.0
+google-cloud-core==1.5.0
+google-cloud-storage==1.35.0
 google-cloud-vision==2.2.0
-google-crc32c @ file:///D:/bld/google-crc32c_1611954416927/work
-google-resumable-media @ file:///home/conda/feedstock_root/build_artifacts/google-resumable-media_1608141079349/work
-googleapis-common-protos @ file:///D:/bld/googleapis-common-protos-feedstock_1604414969165/work
-grpcio @ file:///D:/bld/grpcio_1614459162229/work
-idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1593328102638/work
+google-crc32c==1.1.2
+google-resumable-media==1.2.0
+googleapis-common-protos==1.52.0
+grpcio==1.36.0
+idna==2.10
 importlib-metadata==3.7.0
 isort==4.3.21
 itsdangerous==1.1.0
-Jinja2 @ file:///home/conda/feedstock_root/build_artifacts/jinja2_1612119311452/work
-jmespath @ file:///home/conda/feedstock_root/build_artifacts/jmespath_1589369830981/work
+Jinja2==2.11.3
+jmespath==0.10.0
 joblib==1.0.1
 lazy-object-proxy==1.4.3
 libcst==0.3.17
-MarkupSafe @ file:///D:/bld/markupsafe_1610127696479/work
+MarkupSafe==1.1.1
 mccabe==0.6.1
-multidict @ file:///D:/bld/multidict_1610319180953/work
+multidict==5.1.0
 mypy-extensions==0.4.3
 nltk==3.5
-numpy @ file:///D:/bld/numpy_1612953208180/work
-olefile @ file:///home/conda/feedstock_root/build_artifacts/olefile_1602866521163/work
+numpy==1.20.1
+olefile==0.46
 opencv-python==4.5.1.48
 packaging==20.9
-pdf2image @ file:///home/conda/feedstock_root/build_artifacts/pdf2image_1588278609827/work
-Pillow @ file:///D:/bld/pillow_1612816869722/work
+pdf2image==1.13.1
+Pillow==8.1.0
+pip==21.0.1
 proto-plus==1.14.2
 protobuf==3.15.2
 pyasn1==0.4.8
 pyasn1-modules==0.2.7
 pycodestyle==2.6.0
-pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1593275161868/work
+pycparser==2.20
 pylint==2.5.3
 PyMuPDF==1.18.9
-pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1608055815057/work
+pyOpenSSL==20.0.1
 pyparsing==2.4.7
-PySocks @ file:///D:/bld/pysocks_1610291658292/work
+PySocks==1.7.1
 python-dateutil==2.8.1
-python-dotenv @ file:///home/conda/feedstock_root/build_artifacts/python-dotenv_1603979006023/work
-pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1612179539967/work
+python-dotenv==0.15.0
+pytz==2021.1
 PyYAML==5.4.1
 regex==2020.11.13
-requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1608156231189/work
-rsa @ file:///home/conda/feedstock_root/build_artifacts/rsa_1614171254180/work
-s3transfer @ file:///home/conda/feedstock_root/build_artifacts/s3transfer_1610404472418/work
+requests==2.25.1
+rsa==4.7.2
+s3transfer==0.3.4
 sacremoses==0.0.43
 scikit-learn==0.24.1
-scipy @ file:///C:/bld/scipy_1609458088359/work
+scipy==1.6.0
 sentence-transformers==0.4.1.2
 sentencepiece==0.1.95
+setuptools==50.3.2
 Shapely==1.7.1
-six @ file:///home/conda/feedstock_root/build_artifacts/six_1590081179328/work
-smart-open @ file:///home/conda/feedstock_root/build_artifacts/smart_open_1613384445996/work
+six==1.15.0
+smart-open==4.2.0
 SpeechRecognition==3.8.1
 threadpoolctl==2.1.0
 tokenizers==0.10.1
@@ -85,12 +87,13 @@ torchvision==0.8.1
 tqdm==4.58.0
 transformers==4.3.3
 typed-ast==1.4.1
-typing-extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1602702424206/work
+typing-extensions==3.7.4.3
 typing-inspect==0.6.0
-urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1611695416663/work
+urllib3==1.26.3
 Werkzeug==1.0.1
-win-inet-pton @ file:///D:/bld/win_inet_pton_1610147627696/work
+wheel==0.36.2
+win-inet-pton==1.1.0
 wincertstore==0.2
 wrapt==1.12.1
-yarl @ file:///D:/bld/yarl_1603108438752/work
+yarl==1.5.1
 zipp==3.4.0
