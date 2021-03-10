@@ -23,11 +23,13 @@
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
 }
 
-.btn:hover {
+.btn:not(:focus):hover {
   transform: translateY(-3px);
   transform: scale(1.2);
 }
-
+.btn:focus{
+  opacity: 1;
+}
 /*button colors*/
 
 .btn--primary--solid {
