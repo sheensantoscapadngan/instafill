@@ -31,7 +31,7 @@ const Container = styled.div`
 `;
 
 
-function Dropzone(props) {
+function DropzoneMASTER(props) {
 
   const onDrop = useCallback(acceptedFiles =>{
     let formData = new FormData()
@@ -86,7 +86,7 @@ function Dropzone(props) {
   );
 }
 
-<Dropzone />
-export default Dropzone;
+<DropzoneMASTER />
+export default DropzoneMASTER;
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import './index.css';
 import './tooltip.css';
-import {Button, Popup, Dropzone } from '../components/common';
+import {Button, Popup, DropzoneMASTER, DropzonePDF } from '../components/common';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
@@ -29,13 +29,20 @@ function ThirdButton(){
 const MainPage = () =>{
 
 
-  const [buttonPopup, setButtonPopup] = useState(false);
+  const [buttonPopupPDF, setButtonPopupPDF] = useState(false);
+  const [buttonPopupMASTER, setButtonPopupMASTER] = useState(false);
 
     return(
-        <div>
-          <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
+        <div className="bgx">
+          <Popup trigger={buttonPopupPDF} setTrigger={setButtonPopupPDF}>
             <div>
-            <Dropzone></Dropzone>
+            <DropzonePDF></DropzonePDF>
+              
+            </div>
+          </Popup>
+          <Popup trigger={buttonPopupMASTER} setTrigger={setButtonPopupMASTER}>
+            <div>
+            <DropzoneMASTER></DropzoneMASTER>
               
             </div>
           </Popup>
@@ -49,7 +56,7 @@ const MainPage = () =>{
               type="button"
               buttonStyle="btn--primary--solid"
               buttonSize="btn--large"
-              onClick={() => setButtonPopup(true)}>
+              onClick={() => setButtonPopupPDF(true)}>
               <FontAwesomeIcon icon="upload"/>
               <p className="biggerText">Upload file</p>
               <p className="smallerText">Upload your blank pdf files here!</p>
@@ -63,7 +70,7 @@ const MainPage = () =>{
               type="button"
               buttonStyle="btn--primary--solid"
               buttonSize="btn--large"
-              onClick={() => setButtonPopup(true)}>
+              onClick={() => setButtonPopupMASTER(true)}>
               <FontAwesomeIcon icon="upload"/>
               <p className="biggerText">Upload Master</p>
               <p className="smallerText">Upload your master document here!</p>

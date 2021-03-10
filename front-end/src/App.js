@@ -11,10 +11,14 @@ import createMaster from './pages/createMaster';
 function App() {
   return (  
     <Router>
+      <div className="MainPage">
       <Navbar/>
+      <Route exact path='/' component={MainPage}/>
+      </div>
       <Switch>
-        <Route exact path='/' component={MainPage}/>
+    <div className="masterx">
         <Route exact path='/createMaster' component={createMaster}/>
+        </div>
       </Switch>
     </Router>
   );

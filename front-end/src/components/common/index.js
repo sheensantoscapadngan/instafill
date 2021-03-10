@@ -1,10 +1,12 @@
 import Button from './button';
-import Navbar from './navbar';
+import Navbar from './navbar/Navbar';
 import Popup from './popup';
-import Dropzone from './dropzone';
+import DropzoneMASTER from './dropzone/DropzoneMASTER';
+import DropzonePDF from './dropzone/DropzonePDF';
 export {
     Button,
     Navbar,
     Popup,
-    Dropzone
+    DropzoneMASTER,
+    DropzonePDF
 }

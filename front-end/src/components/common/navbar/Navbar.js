@@ -1,5 +1,5 @@
 import React from 'react';
-import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from "./Navbar";
+import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from "./Navbar.jsx";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faTwitter,
