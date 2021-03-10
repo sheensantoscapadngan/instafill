@@ -38,8 +38,8 @@ function Dropzone(props) {
     formData.append('pdf',acceptedFiles[0])
     formData.append('master',acceptedFiles[1])
 
-    ///pdflib.preprocessPdf(acceptedFiles[0])
-
+    pdflib.preprocessPdf(acceptedFiles[0])
+    
     axios({
       url: '/process',
       method: "POST",

@@ -1,41 +1,54 @@
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 function downloadPdf(bytes){
-  var blob=new Blob([bytes], {type: "application/pdf"});// change resultByte to bytes
+  var blob=new Blob([bytes], {type: "application/pdf"});
   var link=document.createElement('a');
   link.href=window.URL.createObjectURL(blob);
   link.download="edited.pdf";
   link.click();
 }
 
-async function modifyPdf(bytes) {
+async function modifyPdf(bytes,position_dicts) {
+
+
+  position_dicts = {
+      0:[{"position":(10,10),"value":"carabao"}]
+  }
 
   const existingPdfBytes = bytes
 
   const pdfDoc = await PDFDocument.load(existingPdfBytes)
-  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
   const pages = pdfDoc.getPages()
-  const firstPage = pages[0]
-  const { width, height } = firstPage.getSize()
-  firstPage.drawText('This text was added with JavaScript!', {
-    x: 5,
-    y: height / 2 + 300,
-    size: 50,
-    font: helveticaFont,
-    color: rgb(0.95, 0.1, 0.1),
-    rotate: degrees(-45),
-  })
+  const { width, height } = pages[0]
+  console.log("WIDTH AND HEIGHT:",width,",",height)
+
+  for(let page_number in position_dicts){
+    let fill_objects = position_dicts[page_number]
+    for(let object_number in fill_objects){
+      let fill_object = fill_objects[object_number]
+      let page = pages[page_number]
+      let value = fill_object["value"]
+      let position = fill_object["position"]
+      page.drawText(value,{
+        x:position[0],
+        y:position[1],
+        size:20
+      })
+    }
+  
+  }
 
   const pdfBytes = await pdfDoc.save()
   downloadPdf(pdfBytes)
 }
  
-export function preprocessPdf(file){
+export function preprocessPdf(file,position_dicts){
   let reader = new FileReader()
   reader.readAsArrayBuffer(file)
 
   reader.onload = ()=>{
     modifyPdf(reader.result)
   }
-}
+} 
+  
