@@ -7,6 +7,8 @@ import axios from 'axios';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import * as pdflib from '../../../pdflib/processPdf.js'; 
+
 library.add(faUpload)
 
 const getColor = (props) => {
@@ -36,6 +38,8 @@ function Dropzone(props) {
     formData.append('pdf',acceptedFiles[0])
     formData.append('master',acceptedFiles[1])
 
+    ///pdflib.preprocessPdf(acceptedFiles[0])
+
     axios({
       url: '/process',
       method: "POST",
@@ -56,8 +60,6 @@ function Dropzone(props) {
     isDragAccept,
     isDragReject,
   } = useDropzone({accept: '.pdf, .txt',onDrop});
-
-
 
   
   return (

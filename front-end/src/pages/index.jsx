@@ -6,10 +6,14 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
 import  { useState } from 'react';
+
 library.add(faUpload, faPen)
 
 const MainPage = () =>{
+
+  
   const [buttonPopup, setButtonPopup] = useState(false);
+
     return(
         <div>
           <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
