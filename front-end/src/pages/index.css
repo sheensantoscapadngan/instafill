@@ -1,9 +1,8 @@
 /*button stylings*/
 .buttons {
   text-align: center;
-  margin-top: 10%;
+  margin-top: 7%;
 }
-
 .smallerText {
   font-size: 15px;
 }
@@ -12,11 +11,10 @@
   font-size: 67%;
   font-weight: 500;
 }
-  
+
 /*filler text to even out boxes*/
 
 .filler {
   color: white;
   font-size: 15px;
 }
-  

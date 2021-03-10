@@ -1,0 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+
+.stylish::after,
+.stylish::before {
+  --scale: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(425%) scale(var(--scale));
+  transition: 150ms transform;
+  color: black;
+  opacity: 1;
+  transform-origin: top center;
+}
+
+.stylish::before {
+  font-style: "justified";
+  height: 12%;
+  width: 60%;
+  content: attr(data-tooltip);
+  font-family: "Montserrat", sans-serif;
+}
+.stylish:hover::before {
+  --scale: 1;
+}

@@ -6,7 +6,7 @@ import {
     faInstagram,
     faFacebook
 } from '@fortawesome/free-brands-svg-icons';
-
+import Boop from '../boop';
 
 const Navbar = () =>{
     return(
@@ -21,13 +21,13 @@ const Navbar = () =>{
             </NavLink>
             <NavMenu>
                 <NavLink to="/twitter" activeStyle>
-                    <FontAwesomeIcon icon={faTwitter} size='2x'/>
+                    <Boop className="style" rotation={30} timing={200}><FontAwesomeIcon icon={faTwitter} size='2x'/></Boop>
                 </NavLink>
                 <NavLink to="/instagram" activeStyle>
-                    <FontAwesomeIcon icon={faInstagram} size='2x'/>
+                    <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faInstagram} size='2x'/></Boop>
                 </NavLink>
                 <NavLink to="/facebook" activeStyle>
-                    <FontAwesomeIcon icon={faFacebook} size='2x'/>
+                    <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faFacebook} size='2x'/></Boop>
                 </NavLink>
             </NavMenu>
         </Nav>
