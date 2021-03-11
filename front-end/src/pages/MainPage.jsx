@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import './MainPage.css';
 import './tooltip.css';
 import {Button, Popup, DropzoneMASTER, DropzonePDF } from '../components/common';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';

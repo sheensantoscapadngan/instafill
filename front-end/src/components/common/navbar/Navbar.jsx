@@ -11,6 +11,7 @@ export const Nav = styled.nav`
   justify-content: space-between;
   padding: 0.5rem calc((100vw - 1000px) / 2);
   z-index: 10;
+  background-color: #00abeb;
 
 
   /* Third Nav */

@@ -7,7 +7,7 @@ import {BrowserRouter as Router, Link, Switch, Route} from 'react-router-dom';
 import {signInWithGoogle,signOut} from './services/firebase'
 
 //Pages
-import MainPage from './pages/index';
+import MainPage from './pages/MainPage';
 import CreateMaster from './pages/CreateMaster.jsx';
 import UserProvider from './contexts/UserProvider.js'
 import {userContext} from './contexts/UserProvider.js'
@@ -29,6 +29,7 @@ class App extends Component {
 
       <UserProvider>
         <Router>
+        
           <div className="MainPage">
           <Navbar/>
           <Route exact path='/' component={MainPage}/>

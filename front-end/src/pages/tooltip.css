@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
 
 .stylish::after,
 .stylish::before {
@@ -14,10 +13,8 @@
 
 .stylish::before {
   font-style: "justified";
-  height: 12%;
-  width: 60%;
+  margin-top: 14%;
   content: attr(data-tooltip);
-  font-family: "Montserrat", sans-serif;
 }
 .stylish:hover::before {
   --scale: 1;
