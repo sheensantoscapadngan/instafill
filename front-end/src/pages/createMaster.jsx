@@ -1,11 +1,11 @@
-import React from 'react';
-import './createMaster.css';
+import React,{useContext,useEffect} from 'react';
+import './CreateMaster.css';
 
-const createMaster = () =>{
+const CreateMaster = () =>{
     return(
         <div className="createMaster">
             Diri ka mag sugod ezers
         </div>
     )
 }
-export default createMaster;
+export default CreateMaster;
