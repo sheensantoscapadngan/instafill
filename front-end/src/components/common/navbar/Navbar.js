@@ -7,6 +7,7 @@ import {
     faFacebook
 } from '@fortawesome/free-brands-svg-icons';
 import Boop from '../boop';
+import UserIcon from '../user profile/userIcon';
 
 const Navbar = () =>{
     return(
@@ -29,6 +30,7 @@ const Navbar = () =>{
                 <NavLink to="/facebook" activeStyle>
                     <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faFacebook} size='2x'/></Boop>
                 </NavLink>
+                <UserIcon/>
             </NavMenu>
         </Nav>
     </>
