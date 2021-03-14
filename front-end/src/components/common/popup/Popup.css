@@ -42,8 +42,8 @@
 
 .popup, .inner-popup{
     visibility: visible;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s;
+    -webkit-animation: fadeIn 0.75s;
+    animation: fadeIn 0.75s;
 }
 
 @-webkit-keyframes fadeIn {

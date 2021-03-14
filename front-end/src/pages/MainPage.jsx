@@ -29,6 +29,23 @@ function ThirdButton(){
 };
 const MainPage = () =>{
 
+  const  pageVariants = {
+    in: {
+      opacity: 1,
+      y: 0
+    },
+    out:{
+      opacity: 1,
+      y: "-100vh",
+    
+    }
+  };
+
+  const pageTransition = {
+    type: "spring"
+
+  }
+
 
   const [buttonPopupPDF, setButtonPopupPDF] = useState(false);
   const [buttonPopupMASTER, setButtonPopupMASTER] = useState(false);
@@ -36,20 +53,9 @@ const MainPage = () =>{
     return(
       <div className="MainPage" >
         <Navbar/>
-        <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity:0}}>
+        <motion.div initial="out" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
           
-          <Popup trigger={buttonPopupPDF} setTrigger={setButtonPopupPDF}>
-            <div>
-            <DropzonePDF></DropzonePDF>
-              
-            </div>
-          </Popup>
-          <Popup trigger={buttonPopupMASTER} setTrigger={setButtonPopupMASTER}>
-            <div>
-            <DropzoneMASTER></DropzoneMASTER>
-              
-            </div>
-          </Popup>
+
           
         
           <div className="buttons">
@@ -99,6 +105,18 @@ const MainPage = () =>{
             </view>
           </div>
         </motion.div>
+        <Popup trigger={buttonPopupPDF} setTrigger={setButtonPopupPDF}>
+            <div>
+            <DropzonePDF></DropzonePDF>
+              
+            </div>
+          </Popup>
+          <Popup trigger={buttonPopupMASTER} setTrigger={setButtonPopupMASTER}>
+            <div>
+            <DropzoneMASTER></DropzoneMASTER>
+              
+            </div>
+          </Popup>
         </div>
     )
 }

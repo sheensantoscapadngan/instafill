@@ -139,3 +139,19 @@ a {
 .logout-text {
   margin-top: 2%;
 }
+
+.menu-dropdown{
+  visibility: visible;
+  -webkit-animation: fadeIn 0.7s;
+  animation: fadeIn 0.5s;
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
