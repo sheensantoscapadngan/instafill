@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Component } from 'react';
 import './App.css';
-import {Button, Navbar} from './components/common';
+import {Navbar} from './components/common';
 import {BrowserRouter as Router, Link, Switch, Route} from 'react-router-dom';
-
+import {AnimatePresence, motion} from 'framer-motion';
 //auth
 import {signInWithGoogle,signOut} from './services/firebase'
 
@@ -29,17 +29,14 @@ class App extends Component {
 
       <UserProvider>
         <Router>
-        
-          <div className="MainPage">
-          <Navbar/>
-          <Route exact path='/' component={MainPage}/>
-          </div>
+    
+          <AnimatePresence>
           <Switch>
-        <div className="masterx">
-            <Route exact path='/createMaster' component={CreateMaster}/>
-            </div>
+          <Route exact path='/' component={MainPage} className="MainPage"/>
+          <Route exact path='/createMaster' component={CreateMaster}/>
           </Switch>
-      
+          </AnimatePresence>
+
         </Router>
       </UserProvider>
     

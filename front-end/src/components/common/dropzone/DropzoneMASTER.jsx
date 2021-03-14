@@ -7,7 +7,7 @@ import axios from 'axios';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
-import * as pdflib from '../../../pdflib/processPdf.js'; 
+
 
 library.add(faUpload)
 
@@ -35,10 +35,9 @@ function DropzoneMASTER(props) {
 
   const onDrop = useCallback(acceptedFiles =>{
     let formData = new FormData()
-    formData.append('pdf',acceptedFiles[0])
-    formData.append('master',acceptedFiles[1])
+    formData.append('master',acceptedFiles[0])
 
-    pdflib.preprocessPdf(acceptedFiles[0])
+    
     
     axios({
       url: '/process',

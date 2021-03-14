@@ -21,13 +21,13 @@ const Navbar = () =>{
                 Form Magic!
             </NavLink>
             <NavMenu>
-                <NavLink to="/twitter" activeStyle>
+                <NavLink to="/" activeStyle>
                     <Boop className="style" rotation={30} timing={200}><FontAwesomeIcon icon={faTwitter} size='2x'/></Boop>
                 </NavLink>
-                <NavLink to="/instagram" activeStyle>
+                <NavLink to="/" activeStyle>
                     <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faInstagram} size='2x'/></Boop>
                 </NavLink>
-                <NavLink to="/facebook" activeStyle>
+                <NavLink to="/" activeStyle>
                     <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faFacebook} size='2x'/></Boop>
                 </NavLink>
                 <UserIcon/>

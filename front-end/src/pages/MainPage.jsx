@@ -1,12 +1,13 @@
 import React from 'react';
 import './MainPage.css';
 import './tooltip.css';
-import {Button, Popup, DropzoneMASTER, DropzonePDF } from '../components/common';
+import {Button, Popup, DropzoneMASTER, DropzonePDF, Navbar} from '../components/common';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
 import  { useState } from 'react';
+import {motion} from 'framer-motion';
 
 library.add(faUpload, faPen)
 
@@ -33,7 +34,10 @@ const MainPage = () =>{
   const [buttonPopupMASTER, setButtonPopupMASTER] = useState(false);
 
     return(
-        <div className="bgx">
+      <div className="MainPage" >
+        <Navbar/>
+        <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity:0}}>
+          
           <Popup trigger={buttonPopupPDF} setTrigger={setButtonPopupPDF}>
             <div>
             <DropzonePDF></DropzonePDF>
@@ -94,6 +98,7 @@ const MainPage = () =>{
               </Link>
             </view>
           </div>
+        </motion.div>
         </div>
     )
 }
