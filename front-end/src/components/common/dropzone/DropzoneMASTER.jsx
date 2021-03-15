@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, Component } from 'react';
 import './Dropzone.css'
-import {useDropzone} from 'react-dropzone';
+
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 
+import {useDropzone, FileError, FileRejection} from 'react-dropzone';
 
 library.add(faUpload)
 
@@ -31,10 +32,14 @@ const Container = styled.div`
 `;
 
 
-function DropzoneMASTER(props) {
 
+
+const DropzoneMASTER = ({setFileUploadMASTER}) => {
+
+  
   const onDrop = useCallback(acceptedFiles =>{
-    let formData = new FormData()
+    setFileUploadMASTER(acceptedFiles);
+    /*let formData = new FormData()
     formData.append('master',acceptedFiles[0])
 
     
@@ -48,7 +53,7 @@ function DropzoneMASTER(props) {
       data: formData
     }).then((res)=>{
       
-    })
+    })*/
 
   }, [])
   
@@ -58,7 +63,7 @@ function DropzoneMASTER(props) {
     isDragActive,
     isDragAccept,
     isDragReject,
-  } = useDropzone({accept: '.pdf, .txt',onDrop});
+  } = useDropzone({accept: '.txt',onDrop});
 
   
   return (

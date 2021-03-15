@@ -8,6 +8,7 @@ import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
 import  { useState } from 'react';
 import {motion} from 'framer-motion';
+import axios from 'axios';
 
 library.add(faUpload, faPen)
 
@@ -50,6 +51,34 @@ const MainPage = () =>{
   const [buttonPopupPDF, setButtonPopupPDF] = useState(false);
   const [buttonPopupMASTER, setButtonPopupMASTER] = useState(false);
 
+  const [fileUploadPDF, setFileUploadPDF] = useState([])
+  const [fileUploadMASTER, setFileUploadMASTER] = useState([])
+
+  const clearState = () =>{
+    setFileUploadPDF([]);
+    setFileUploadMASTER([]);
+  }
+
+  console.log(fileUploadPDF)
+  console.log(fileUploadMASTER)
+  if(fileUploadMASTER.length == 1 && fileUploadPDF.length == 1){
+    let formData = new FormData()
+    formData.append('master',fileUploadMASTER[0])
+    formData.append('pdf', fileUploadPDF[0])
+    clearState();
+
+      
+    axios({
+      url: '/process',
+      method: "POST",
+      headers:{
+        'Content-Type': 'multipart/form-data'
+      },
+      data: formData
+    }).then((res)=>{  
+    })
+    
+  }
     return(
       <div className="MainPage" >
         <Navbar/>
@@ -107,13 +136,13 @@ const MainPage = () =>{
         </motion.div>
         <Popup trigger={buttonPopupPDF} setTrigger={setButtonPopupPDF}>
             <div>
-            <DropzonePDF></DropzonePDF>
+            <DropzonePDF setFileUploadPDF={setFileUploadPDF}></DropzonePDF>
               
             </div>
           </Popup>
           <Popup trigger={buttonPopupMASTER} setTrigger={setButtonPopupMASTER}>
             <div>
-            <DropzoneMASTER></DropzoneMASTER>
+            <DropzoneMASTER setFileUploadMASTER={setFileUploadMASTER}></DropzoneMASTER>
               
             </div>
           </Popup>

@@ -2,12 +2,15 @@ import React, { useCallback } from 'react';
 import './Dropzone.css'
 import {useDropzone} from 'react-dropzone';
 import styled from 'styled-components';
-import axios from 'axios';
+
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import * as pdflib from '../../../pdflib/processPdf.js'; 
+
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
 library.add(faUpload)
 
 const getColor = (props) => {
@@ -30,13 +33,14 @@ const Container = styled.div`
 `;
 
 
-function DropzonePDF(props) {
+/*const DropzonePDF = ({setFileUploadPDF}) => {
 
   const onDrop = useCallback(acceptedFiles =>{
-    let formData = new FormData()
+    setFileUploadPDF(acceptedFiles);  
+    /*let formData = new FormData()
     formData.append('pdf',acceptedFiles[0])
 
-    /*pdflib.preprocessPdf(acceptedFiles[0])*/
+    pdflib.preprocessPdf(acceptedFiles[0])
 
     axios({
       url: '/process',
@@ -57,7 +61,7 @@ function DropzonePDF(props) {
     isDragActive,
     isDragAccept,
     isDragReject,
-  } = useDropzone({accept: '.pdf, .txt',onDrop});
+  } = useDropzone({accept: '.pdf',onDrop});
 
 
 
@@ -87,6 +91,44 @@ function DropzonePDF(props) {
 }
 
 <DropzonePDF />
+export default DropzonePDF;*/
+
+
+const DropzonePDF = ({setFileUploadPDF}) => {
+  const getUploadParams = () => {
+    return { url: 'https://httpbin.org/post' } /* filler ra ni guys para mu gana ang progress bar*/
+  }
+
+  const handleChangeStatus = ({ meta }, status) => {
+    console.log(status, meta)
+  }
+
+  const handleSubmit = (file,allFiles) => {
+    setFileUploadPDF(file.map(f => f.file))
+    console.log(file.map(f => f.file))
+    allFiles.forEach(f => f.remove())
+    
+  }
+
+  return (
+    <Dropzone
+      getUploadParams={getUploadParams}
+      onChangeStatus={handleChangeStatus}
+      onSubmit={handleSubmit}
+      maxFiles={1}
+      accept=".pdf"
+      inputContent={
+      <div className="inputContent">
+      
+      <h1>              DROP FILES HERE OR <span className="browse">CLICK TO BROWSE</span></h1>
+      
+      </div>
+      }
+      styles={{ dropzone: { minHeight: 400, maxHeight: 250 } }}
+      
+    />
+  )
+}
+
+<DropzonePDF />
 export default DropzonePDF;
-
-

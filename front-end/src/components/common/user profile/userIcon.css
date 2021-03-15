@@ -94,6 +94,7 @@ a {
   background-color: white;
   border-radius: var(--border-radius);
   overflow: hidden;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
 }
 .logout-menu {
   display: flex;
