@@ -6,14 +6,14 @@ import styled from 'styled-components';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import * as pdflib from '../../../pdflib/processPdf.js'; 
 
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
-library.add(faUpload)
+library.add(faFilePdf)
 
-const getColor = (props) => {
+/*const getColor = (props) => {
   /*if (props.isDragAccept) {
       return '#00e676';
   }
@@ -22,7 +22,7 @@ const getColor = (props) => {
   }
   if (props.isDragActive) {
       return '#2196f3';
-  }*/
+  }//
   return '#00abeb';
 }
 
@@ -33,12 +33,20 @@ const Container = styled.div`
 `;
 
 
-/*const DropzonePDF = ({setFileUploadPDF}) => {
+const DropzonePDF = ({setFileUploadPDF}) => {
 
   const onDrop = useCallback(acceptedFiles =>{
     setFileUploadPDF(acceptedFiles);  
     /*let formData = new FormData()
     formData.append('pdf',acceptedFiles[0])
+  const onDrop = useCallback(PDFFiles =>{
+    
+    let formData = new FormData()
+    formData.append('pdf',PDFFiles[0])
+
+
+    console.log(PDFFiles);
+    pdflib.preprocessPdf(PDFFiles[0])
 
     pdflib.preprocessPdf(acceptedFiles[0])
 
@@ -111,6 +119,7 @@ const DropzonePDF = ({setFileUploadPDF}) => {
   }
 
   return (
+    <div className="inner-container">
     <Dropzone
       getUploadParams={getUploadParams}
       onChangeStatus={handleChangeStatus}
@@ -119,14 +128,16 @@ const DropzonePDF = ({setFileUploadPDF}) => {
       accept=".pdf"
       inputContent={
       <div className="inputContent">
-      
-      <h1>              DROP FILES HERE OR <span className="browse">CLICK TO BROWSE</span></h1>
+      <p className="filler">_________________________________________<FontAwesomeIcon icon="file-pdf" color="#c32148" size="3x"/>________________________________________</p>
+      <h2>DROP PDF HERE OR <span className="browse">CLICK TO BROWSE</span></h2>
+      <p className="filler">______________________________________________________________________________________</p>
       
       </div>
       }
       styles={{ dropzone: { minHeight: 400, maxHeight: 250 } }}
       
     />
+    </div>
   )
 }
 

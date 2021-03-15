@@ -9,6 +9,7 @@
   --success: #75fa83;
   --white: #fdfdfd;
   --dark: #181717;
+ 
 }
 /*button properties*/
 
@@ -21,6 +22,7 @@
   transition: transform 0.3s ease;
   outline: none;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+  
 }
 
 .btn:not(:focus):hover {
@@ -44,7 +46,7 @@
   border: none;
 }
 .btn--danger--solid {
-  background-color: var(--danger);
+  background-color: #00abeb;
   color: var(--white);
   border: none;
 }
@@ -65,8 +67,8 @@
 }
 .btn--danger--outline {
   background-color: transparent;
-  border: 2px solid var(--danger);
-  color: var(--danger);
+  border: none;
+  color: var(--dark);
 }
 .btn--success--outline {
   background-color: transparent;
@@ -77,8 +79,14 @@
 /*button sizes*/
 
 .btn--medium {
-  padding: 10px 20px;
-  font-size: 18px;
+  height: 30px;
+  width: 80px;
+  margin-top: 10px;
+  float: right;
+  margin-right: 20px;
+  font-size: 20px;
+  
+
 }
 
 .btn--large {
@@ -86,4 +94,5 @@
   width: 350px;
   padding-bottom: 17px;
   font-size: 40px;
+  
 }

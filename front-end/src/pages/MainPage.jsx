@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './MainPage.css';
 import './tooltip.css';
 import {Button, Popup, DropzoneMASTER, DropzonePDF, Navbar} from '../components/common';
@@ -6,7 +6,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
-import  { useState } from 'react';
 import {motion} from 'framer-motion';
 import axios from 'axios';
 
@@ -48,6 +47,7 @@ const MainPage = () =>{
   }
 
 
+
   const [buttonPopupPDF, setButtonPopupPDF] = useState(false);
   const [buttonPopupMASTER, setButtonPopupMASTER] = useState(false);
 
@@ -59,8 +59,10 @@ const MainPage = () =>{
     setFileUploadMASTER([]);
   }
 
-  console.log(fileUploadPDF)
-  console.log(fileUploadMASTER)
+
+
+
+
   if(fileUploadMASTER.length == 1 && fileUploadPDF.length == 1){
     let formData = new FormData()
     formData.append('master',fileUploadMASTER[0])
@@ -148,6 +150,8 @@ const MainPage = () =>{
           </Popup>
         </div>
     )
+
+
 }
 
 export default MainPage;

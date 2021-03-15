@@ -9,13 +9,17 @@
   color: black;
   opacity: 1;
   transform-origin: top center;
+
 }
 
 .stylish::before {
   font-style: "justified";
-  margin-top: 14%;
+  margin-top: 12%;
   content: attr(data-tooltip);
+
+
 }
 .stylish:hover::before {
   --scale: 1;
+
 }
