@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useContext} from 'react';
 import './userIcon.css';
 import { ReactComponent as Profile } from '../../../icons/user.svg';
 import { ReactComponent as Log_out } from '../../../icons/logout.svg';
+import {signInWithGoogle,signOut,checkIfUserExists} from '../../../services/firebase'
+import {UserContext} from '../../../contexts/UserProvider.js'
+
 
 function UserIcon() {
   return (
@@ -28,6 +31,15 @@ function NavItem(props) {
 function Menu() {
   const [userName, setUserName] = useState(' Guest');
   const [description, setDescription] = useState('Lorem Ipsum')
+  let user = useContext(UserContext)
+  
+  useEffect(()=>{
+    if(user != null){
+      setUserName(user.displayName)
+      setDescription(user.email)
+    }
+  })
+
   return(
     <div className='menu-dropdown'>
       <a href="#" className='profile-menu'>
@@ -35,13 +47,13 @@ function Menu() {
           <span className='icon-circle-small'><span className='icon-button-small'>{ <Profile/>}</span></span>
         </div>
         <div className='name-space'>
-          <div className='name'>{userName}</div>
+          <div className='name' onClick={signInWithGoogle}>{userName}</div>
           <div className='description'>{description}</div>
         </div>
       </a>
       <div className='logout-menu'>
         <span className='logout-icon'>{<Log_out/>}</span>
-        <span className='logout-text'>Log out</span>
+        <span className='logout-text' onClick={signOut}>Log out</span>
       </div>
     </div>
   );

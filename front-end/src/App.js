@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect, Component,useContext } from 'react';
 import './App.css';
 import {Navbar} from './components/common';
 import {BrowserRouter as Router, Link, Switch, Route, useLocation} from 'react-router-dom';
@@ -16,7 +16,7 @@ class App extends Component {
 
   render(){
     return (  
-    
+
       /*
       <UserProvider>
         <div className="App">
@@ -26,7 +26,8 @@ class App extends Component {
     
       </UserProvider>
       */
-
+      
+      
       <UserProvider>
         <Router>
     
@@ -38,8 +39,9 @@ class App extends Component {
           </AnimatePresence>
 
         </Router>
-      </UserProvider>
-    
+    </UserProvider>
+  
+
     );
   }
 

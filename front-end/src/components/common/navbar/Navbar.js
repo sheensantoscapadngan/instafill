@@ -8,11 +8,13 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import Boop from '../boop';
 import UserIcon from '../user profile/userIcon';
+import UserProvider from '../../../contexts/UserProvider.js'
 
 const Navbar = () =>{
     return(
     <>
         <Nav>
+        <UserProvider>
             <NavLink to="/">
                 <h1> InstaFill </h1>
             </NavLink>
@@ -32,6 +34,7 @@ const Navbar = () =>{
                 </NavLink>
                 <UserIcon/>
             </NavMenu>
+        </UserProvider>
         </Nav>
     </>
 

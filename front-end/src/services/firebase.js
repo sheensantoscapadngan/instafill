@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import "firebase/auth"
+import "firebase/firestore"
 
 var firebaseConfig = {
     apiKey: "AIzaSyCgBgYQYByo-4RHmLohvtBb33UFknX8SF0",
@@ -13,11 +14,12 @@ var firebaseConfig = {
 
 const app = firebase.initializeApp(firebaseConfig)
 export const auth = app.auth()
+export const db = firebase.firestore()
 
 const googleProvider = new firebase.auth.GoogleAuthProvider()
 export const signInWithGoogle = () =>{
     auth.signInWithPopup(googleProvider).then((res)=>{
-        console.log(res.user)
+        checkIfUserExists(res.user)
     }).catch((error)=>{
         console.log(error.message)
     })
@@ -25,10 +27,27 @@ export const signInWithGoogle = () =>{
 
 export const signOut = () =>{
     auth.signOut().then((res)=>{
-        console.log("SIGNED OUT!")
+        window.location.reload()
     }).catch((error)=>{
-        console.log("ERROR SIGNING OUT")
+        console.log(error)
     })
+}
+
+export const checkIfUserExists = (user) =>{
+    let email = user.email
+    db.collection('users').doc(email).get().then((snapshot)=>{
+        if(!snapshot.exists){
+            console.log("USER DOES NOT EXIST")
+            createUserDB(user.email)
+        }else{
+            console.log("USER EXISTS")
+        }
+    })
+}
+
+const createUserDB = (email) =>{
+    db.collection('users').doc(email).set({energy:3})
+    console.log("USER CREATED")
 }
 
 export default app  
