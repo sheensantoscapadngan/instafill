@@ -19,19 +19,28 @@ const Navbar = () =>{
                 <h1> InstaFill </h1>
             </NavLink>
             <Bars />
-            <NavLink to="/" activeStyle>
+            <NavLink to="/" >
                 Form Magic!
             </NavLink>
             <NavMenu>
-                <NavLink to="/" activeStyle>
-                    <Boop className="style" rotation={30} timing={200}><FontAwesomeIcon icon={faTwitter} size='2x'/></Boop>
-                </NavLink>
-                <NavLink to="/" activeStyle>
-                    <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faInstagram} size='2x'/></Boop>
-                </NavLink>
-                <NavLink to="/" activeStyle>
-                    <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faFacebook} size='2x'/></Boop>
-                </NavLink>
+                
+            <a href="https://twitter.com" >
+                
+                    <Boop className="style" rotation={30} timing={200}><FontAwesomeIcon icon={faTwitter} size='2x' color="white"/></Boop>
+                    
+                </a>
+                
+                <a href="https://instagram.com" >
+                
+                    <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faInstagram} size='2x' color="white"/></Boop>
+                    
+                </a>
+                <a href="https://facebook.com" >
+                
+                    <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faFacebook} size='2x' color="white"/></Boop>
+                    
+                </a>
+            
                 <UserIcon/>
             </NavMenu>
         </UserProvider>
