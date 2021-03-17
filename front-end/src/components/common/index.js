@@ -8,5 +8,5 @@ export {
     Navbar,
     Popup,
     DropzoneMASTER,
-    DropzonePDF
+    DropzonePDF,
 }

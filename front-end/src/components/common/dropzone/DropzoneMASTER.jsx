@@ -1,17 +1,21 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, Component } from 'react';
 import './Dropzone.css'
-import {useDropzone} from 'react-dropzone';
+
 import styled from 'styled-components';
 import axios from 'axios';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faFileInvoice } from '@fortawesome/free-solid-svg-icons';
 
+import {useDropzone, FileError, FileRejection} from 'react-dropzone';
 
-library.add(faUpload)
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
 
-const getColor = (props) => {
+library.add(faFileInvoice)
+
+/*const getColor = (props) => {
   /*if (props.isDragAccept) {
       return '#00e676';
   }
@@ -20,7 +24,7 @@ const getColor = (props) => {
   }
   if (props.isDragActive) {
       return '#2196f3';
-  }*/
+  }///
   return '#00abeb';
 }
 
@@ -31,10 +35,14 @@ const Container = styled.div`
 `;
 
 
-function DropzoneMASTER(props) {
 
+
+const DropzoneMASTER = ({setFileUploadMASTER}) => {
+
+  
   const onDrop = useCallback(acceptedFiles =>{
-    let formData = new FormData()
+    setFileUploadMASTER(acceptedFiles);
+    ///let formData = new FormData()
     formData.append('master',acceptedFiles[0])
 
     
@@ -48,7 +56,7 @@ function DropzoneMASTER(props) {
       data: formData
     }).then((res)=>{
       
-    })
+    })///
 
   }, [])
   
@@ -58,7 +66,7 @@ function DropzoneMASTER(props) {
     isDragActive,
     isDragAccept,
     isDragReject,
-  } = useDropzone({accept: '.pdf, .txt',onDrop});
+  } = useDropzone({accept: '.txt',onDrop});
 
   
   return (
@@ -86,6 +94,46 @@ function DropzoneMASTER(props) {
 }
 
 <DropzoneMASTER />
+export default DropzoneMASTER;*/
+
+
+const DropzoneMASTER = ({setFileUploadMASTER}) => {
+  const getUploadParams = () => {
+    return { url: 'https://httpbin.org/post' } /* filler ra ni guys para mu gana ang progress bar*/
+  }
+
+  const handleChangeStatus = ({ meta }, status) => {
+    console.log(status, meta)
+  }
+
+  const handleSubmit = (file,allFiles) => {
+    setFileUploadMASTER(file.map(f => f.file))
+    console.log(file.map(f => f.file))
+    allFiles.forEach(f => f.remove())
+    
+  }
+
+  return (
+    <div className="inner-container">
+    <Dropzone
+      getUploadParams={getUploadParams}
+      onChangeStatus={handleChangeStatus}
+      onSubmit={handleSubmit}
+      maxFiles={1}
+      accept=".txt"
+      inputContent={
+      <div className="inputContent">
+      <p className="filler">_____________________________________________<FontAwesomeIcon icon="file-invoice" color="	#228B22" size="3x"/>_____________________________________________</p>
+      <h2>DROP MASTER HERE OR <span className="browse">CLICK TO BROWSE</span></h2>
+      <p className="filler">_______________________________________________________________________________________________</p>
+      </div>
+      }
+      styles={{ dropzone: { minHeight: 400, maxHeight: 250 } }}
+      
+    />
+    </div>
+  )
+}
+
+<DropzoneMASTER />
 export default DropzoneMASTER;
-
-

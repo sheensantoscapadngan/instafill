@@ -2,15 +2,18 @@ import React, { useCallback } from 'react';
 import './Dropzone.css'
 import {useDropzone} from 'react-dropzone';
 import styled from 'styled-components';
-import axios from 'axios';
+
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import * as pdflib from '../../../pdflib/processPdf.js'; 
-library.add(faUpload)
 
-const getColor = (props) => {
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
+library.add(faFilePdf)
+
+/*const getColor = (props) => {
   /*if (props.isDragAccept) {
       return '#00e676';
   }
@@ -19,7 +22,7 @@ const getColor = (props) => {
   }
   if (props.isDragActive) {
       return '#2196f3';
-  }*/
+  }//
   return '#00abeb';
 }
 
@@ -30,13 +33,22 @@ const Container = styled.div`
 `;
 
 
-function DropzonePDF(props) {
+const DropzonePDF = ({setFileUploadPDF}) => {
 
   const onDrop = useCallback(acceptedFiles =>{
-    let formData = new FormData()
+    setFileUploadPDF(acceptedFiles);  
+    /*let formData = new FormData()
     formData.append('pdf',acceptedFiles[0])
+  const onDrop = useCallback(PDFFiles =>{
+    
+    let formData = new FormData()
+    formData.append('pdf',PDFFiles[0])
 
-    /*pdflib.preprocessPdf(acceptedFiles[0])*/
+
+    console.log(PDFFiles);
+    pdflib.preprocessPdf(PDFFiles[0])
+
+    pdflib.preprocessPdf(acceptedFiles[0])
 
     axios({
       url: '/process',
@@ -57,7 +69,7 @@ function DropzonePDF(props) {
     isDragActive,
     isDragAccept,
     isDragReject,
-  } = useDropzone({accept: '.pdf, .txt',onDrop});
+  } = useDropzone({accept: '.pdf',onDrop});
 
 
 
@@ -87,6 +99,47 @@ function DropzonePDF(props) {
 }
 
 <DropzonePDF />
+export default DropzonePDF;*/
+
+
+const DropzonePDF = ({setFileUploadPDF}) => {
+  const getUploadParams = () => {
+    return { url: 'https://httpbin.org/post' } /* filler ra ni guys para mu gana ang progress bar*/
+  }
+
+  const handleChangeStatus = ({ meta }, status) => {
+    console.log(status, meta)
+  }
+
+  const handleSubmit = (file,allFiles) => {
+    setFileUploadPDF(file.map(f => f.file))
+    console.log(file.map(f => f.file))
+    allFiles.forEach(f => f.remove())
+    
+  }
+
+  return (
+    <div className="inner-container">
+    <Dropzone
+      getUploadParams={getUploadParams}
+      onChangeStatus={handleChangeStatus}
+      onSubmit={handleSubmit}
+      maxFiles={1}
+      accept=".pdf"
+      inputContent={
+      <div className="inputContent">
+      <p className="filler">_________________________________________<FontAwesomeIcon icon="file-pdf" color="#c32148" size="3x"/>________________________________________</p>
+      <h2>DROP PDF HERE OR <span className="browse">CLICK TO BROWSE</span></h2>
+      <p className="filler">______________________________________________________________________________________</p>
+      
+      </div>
+      }
+      styles={{ dropzone: { minHeight: 400, maxHeight: 250 } }}
+      
+    />
+    </div>
+  )
+}
+
+<DropzonePDF />
 export default DropzonePDF;
-
-

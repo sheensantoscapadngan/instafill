@@ -10,7 +10,6 @@
     justify-content: center;
     align-items: center;
 
-     
 }
 
 .inner-popup{
@@ -22,6 +21,9 @@
     max-width: 1200px;
     background-color: white;
 
+
+
+
 }
 
 /*
@@ -32,19 +34,19 @@
 }
 */
 .btn-close{
-    padding: 5px 5px;
+    height: 40px;
+    width: 40px;
     background-color: #00abeb;
-    margin-left: 48%;
-    outline: none;
     border-radius: 5px;
-    color: white;
+
 }
 
 .popup, .inner-popup{
     visibility: visible;
-    -webkit-animation: fadeIn 0.75s;
-    animation: fadeIn 0.75s;
+    -webkit-animation: fadeIn 0.25s;
+    animation: fadeIn 0.25s;
 }
+
 
 @-webkit-keyframes fadeIn {
     from {opacity: 0;} 
