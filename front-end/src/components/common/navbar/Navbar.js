@@ -24,18 +24,18 @@ const Navbar = () =>{
             </NavLink>
             <NavMenu>
                 
-            <a href="https://twitter.com" >
+            <a href="https://twitter.com" target="_blank">
                 
                     <Boop className="style" rotation={30} timing={200}><FontAwesomeIcon icon={faTwitter} size='2x' color="white"/></Boop>
                     
                 </a>
                 
-                <a href="https://instagram.com" >
+                <a href="https://instagram.com" target="_blank">
                 
                     <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faInstagram} size='2x' color="white"/></Boop>
                     
                 </a>
-                <a href="https://facebook.com" >
+                <a href="https://facebook.com" target="_blank">
                 
                     <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faFacebook} size='2x' color="white"/></Boop>
                     
