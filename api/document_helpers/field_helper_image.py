@@ -16,7 +16,7 @@ def convert_pdf_to_img(filename):
         pix.writePNG(output)
         page_img = cv2.imread(output, cv2.COLOR_BGR2GRAY)
         pages_img.append(page_img)
-        os.remove(output)
+        # os.remove(output)
     return pages_img
 
 
@@ -76,6 +76,10 @@ def onMouse(event, x, y, flags, param):
 
 def match_fields_to_position(fields_dict, pages_data, pages_img):
     fields_to_position = {}
+    filled_lines = set()
+    fillable_lines = {}
+
+    # identify field to line or box
     for page, fields in fields_dict.items():
         img = pages_img[page-1]
         horizontal_lines, boxes, line_to_box = pages_data[page]
@@ -83,6 +87,7 @@ def match_fields_to_position(fields_dict, pages_data, pages_img):
         for field, field_position in fields.items():
             top_right = field_position['top_right']
             bot_right = field_position['bot_right']
+
             base_x = top_right[0]
             base_y = (top_right[1] + bot_right[1]) // 2
 
@@ -94,22 +99,59 @@ def match_fields_to_position(fields_dict, pages_data, pages_img):
             # if line is part of a box or not
             if closest_line.retrieve_line_definition() not in line_to_box:
                 field_to_position[field] = closest_line.retrieve_line_definition()
+                filled_lines.add(closest_line.retrieve_line_definition())
             else:
                 box = boxes[line_to_box[closest_line.retrieve_line_definition()]]
                 bottom_line = box.retrieve_bottom_line()
                 field_to_position[field] = bottom_line.retrieve_line_definition()
+                filled_lines.add(bottom_line.retrieve_line_definition())
 
-        '''
+            '''
+            cv2.imshow("img", img)
+            cv2.setMouseCallback("img",onMouse)
+            cv2.setMouseCallback("cnt", onMouse)
+            cv2.waitKey(0)
+            '''
+            fields_to_position[page] = field_to_position
+
+    # identify vacant lines
+    for page, _ in fields_dict.items():
+        horizontal_lines, _, _ = pages_data[page]
+        page_fillables = []
+        for line in horizontal_lines:
+            if line.retrieve_line_definition() not in filled_lines:
+                page_fillables.append(line.retrieve_line_definition())
+        fillable_lines[page] = page_fillables
+
+    return fields_to_position, fillable_lines
+
+
+def show_fields(fields_list, pages_img):
+    for page, fields in fields_list.items():
+        img = pages_img[page-1]
+        img = cv2.circle(img, (0, 0), radius=10,
+                         color=(0, 0, 255), thickness=-1)
+        for field, coords in fields.items():
+            top_left = coords['top_left']
+            top_right = coords['top_right']
+            bot_left = coords['bot_left']
+            bot_right = coords['bot_right']
+            points = [top_left, top_right, bot_left, bot_right]
+            for i, point in enumerate(points):
+                modified_point = (int(point[0]), int(point[1]))
+                if i == 0:
+                    img = cv2.putText(img, field, modified_point,
+                                      cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 0, 255), 1)
+                img = cv2.circle(img, modified_point, radius=4,
+                                 color=(0, 0, 255), thickness=-1)
+
         cv2.imshow("img", img)
-        cv2.setMouseCallback("img",onMouse)
-        cv2.setMouseCallback("cnt", onMouse)
+        cv2.setMouseCallback("img", onMouse)
         cv2.waitKey(0)
-        '''
-        fields_to_position[page] = field_to_position
-    return fields_to_position, None
 
 
 def extract_field_fill_positions(fields, file):
     pages_img = convert_pdf_to_img(file)
+    # show_fields(fields,pages_img)
     pages_data = detect_lines(pages_img)
     return match_fields_to_position(fields, pages_data, pages_img)

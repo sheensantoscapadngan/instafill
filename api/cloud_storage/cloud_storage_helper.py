@@ -1,11 +1,9 @@
 from google.cloud import storage
 import os
 
-'''
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "E:\PROJECTS\instafill_backend\instafill-6fe7e4e642d1.json"
 client = storage.Client(project='instafill')
 bucket = client.get_bucket('instafill')
-'''
 
 
 def upload_pdf_to_storage(source_file_name):
@@ -18,4 +16,9 @@ def upload_pdf_to_storage(source_file_name):
 
 def delete_pdf_from_storage(blob_name):
     blob = bucket.blob(blob_name)
+    blob.delete()
+
+
+def delete_json_from_storage(json):
+    blob = bucket.blob(json)
     blob.delete()
