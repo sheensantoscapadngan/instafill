@@ -9,7 +9,7 @@ import {
 import Boop from '../boop';
 import UserIcon from '../user profile/userIcon';
 import UserProvider from '../../../contexts/UserProvider.js'
-
+import Counter from '../counter/Counter';
 const Navbar = () =>{
     return(
     <>
@@ -23,6 +23,7 @@ const Navbar = () =>{
             </NavLink>
             <Bars/>
             <NavMenu>
+            <Counter/>
                 
             <a href="https://twitter.com" target="_blank">
                 
@@ -40,7 +41,7 @@ const Navbar = () =>{
                     <Boop rotation={30} timing={200}><FontAwesomeIcon icon={faFacebook} size='2x' color="white"/></Boop>
                     
                 </a>
-            
+                
                 <UserIcon/>
             </NavMenu>
             
