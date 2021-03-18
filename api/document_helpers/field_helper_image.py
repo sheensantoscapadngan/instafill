@@ -16,7 +16,7 @@ def convert_pdf_to_img(filename):
         pix.writePNG(output)
         page_img = cv2.imread(output, cv2.COLOR_BGR2GRAY)
         pages_img.append(page_img)
-        # os.remove(output)
+        os.remove(output)
     return pages_img
 
 

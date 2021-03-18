@@ -5,10 +5,8 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-'''
 app.model = SentenceTransformer(
     r'E:\PROJECTS\instafill_backend\api\instafill_text\model\field_model1')
-'''
 
 
 @app.route('/')
@@ -26,9 +24,11 @@ def receive_request_from_client():
     master = uploaded_files['master'].read()
 
     pdf_uri, master_uri = save_pdf_and_master(pdf, master)
-    json_result = process_request(pdf_uri, master_uri, app.model)
+    instafilled, fillable_positions = process_request(
+        pdf_uri, master_uri, app.model)
+    json_result = {'instafilled': instafilled,
+                   'fillable_positions': fillable_positions}
     print("JSON RESULT IS", json_result)
-
     return json_result
 
 
