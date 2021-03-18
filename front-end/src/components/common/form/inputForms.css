@@ -1,0 +1,38 @@
+input{
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    padding: 7px;
+    outline: none;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px #ccc;
+    border-radius: 10px;
+}
+
+.thirds{
+    width: 250px;
+}
+
+.whole{
+    width: 790px;
+}
+
+.half{
+    width: 385px;
+}
+
+.small{
+    width: 60px;
+    text-align: center;
+}
+
+.smallBigger{
+    width: 95px;
+    margin-right: 89.8px;
+    text-align: center;
+}
+
+.hide {
+    visibility: hidden;
+}

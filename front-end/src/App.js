@@ -8,7 +8,7 @@ import {signInWithGoogle,signOut} from './services/firebase'
 
 //Pages
 import MainPage from './pages/MainPage';
-import CreateMaster from './pages/CreateMaster.jsx';
+import CreateMaster from './pages/CreateMaster.js';
 import UserProvider from './contexts/UserProvider.js'
 import {userContext} from './contexts/UserProvider.js'
 
