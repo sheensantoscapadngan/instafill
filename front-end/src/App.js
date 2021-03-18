@@ -12,22 +12,29 @@ import CreateMaster from './pages/CreateMaster.js';
 import UserProvider from './contexts/UserProvider.js'
 import {userContext} from './contexts/UserProvider.js'
 
-class App extends Component {
+import Paypal from './services/Paypal.js'
 
-  render(){
+function App(){
+  const [checkOut,setCheckOut] = useState(0);
+
     return (  
 
       /*
       <UserProvider>
         <div className="App">
-            <button className="login-provider-button" onClick={signInWithGoogle}>SIGN IN</button>
-            <button className="logout-provider-button" onClick={signOut}>SIGN OUT</button>
-        </div>
-    
+          {checkOut ? (
+            <Paypal></Paypal>
+          ) : (
+          <button onClick={()=>{
+            setCheckOut(true)
+          }}>
+            Checkout 
+          </button>
+          )}
+        </div>  
       </UserProvider>
       */
-      
-      
+
       <UserProvider>
         <Router>
     
@@ -40,10 +47,11 @@ class App extends Component {
 
         </Router>
     </UserProvider>
-  
+    
+    
 
     );
-  }
+  
 };
 
 

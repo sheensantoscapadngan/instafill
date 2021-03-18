@@ -10,7 +10,6 @@ function downloadPdf(bytes){
 
 async function modifyPdf(bytes,position_dicts) {
 
-
   position_dicts = {
       0:[{"position":(10,10),"value":"carabao"}]
   }

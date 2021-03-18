@@ -50,5 +50,13 @@ const createUserDB = (email) =>{
     console.log("USER CREATED")
 }
 
+export const addTopupFillers = (email) =>{
+    let fillerTopup = 5
+    db.collection('users').doc(email).get().then((snapshot)=>{
+        let fillerCount = snapshot.data().energy
+        db.collection('users').doc(email).set({energy:fillerCount+fillerTopup})
+    })
+}
+
 export default app  
 
