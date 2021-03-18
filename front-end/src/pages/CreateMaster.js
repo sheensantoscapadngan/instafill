@@ -9,10 +9,7 @@ import {faTrash, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 library.add(faTrash, faPlus)
 
-
 class CreateMaster extends Component{
-
-
 
     constructor(props) {
         super(props);

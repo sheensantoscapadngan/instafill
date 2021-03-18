@@ -16,9 +16,7 @@ import {userContext} from './contexts/UserProvider.js'
 import Paypal from './services/Paypal.js'
 
 function App(){
-  const [response,setResponse] = useState([]);
   const [checkOut,setCheckOut] = useState(0);
-
     return (  
 
       /*
