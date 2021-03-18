@@ -10,11 +10,13 @@ import {signInWithGoogle,signOut} from './services/firebase'
 import MainPage from './pages/MainPage';
 import CreateMaster from './pages/CreateMaster.js';
 import UserProvider from './contexts/UserProvider.js'
+import EditPDF from './pages/EditPDF';
 import {userContext} from './contexts/UserProvider.js'
 
 import Paypal from './services/Paypal.js'
 
 function App(){
+  const [response,setResponse] = useState([]);
   const [checkOut,setCheckOut] = useState(0);
 
     return (  
@@ -40,8 +42,9 @@ function App(){
     
           <AnimatePresence exitBeforeEnter>
           <Switch>
-          <Route exact path='/' component={MainPage} className="MainPage"/>
+          <Route exact path='/' component={MainPage} />
           <Route exact path='/createMaster' component={CreateMaster}/>
+          <Route exact path='/editPDF' component={EditPDF}/>
           </Switch>
           </AnimatePresence>
 

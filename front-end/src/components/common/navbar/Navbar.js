@@ -18,10 +18,10 @@ const Navbar = () =>{
             <NavLink to="/">
                 <h1> InstaFill </h1>
             </NavLink>
-            <Bars />
             <NavLink to="/" >
                 Form Magic!
             </NavLink>
+            <Bars/>
             <NavMenu>
                 
             <a href="https://twitter.com" target="_blank">
@@ -43,6 +43,9 @@ const Navbar = () =>{
             
                 <UserIcon/>
             </NavMenu>
+            
+            
+            
         </UserProvider>
         </Nav>
     </>

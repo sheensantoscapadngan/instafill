@@ -7,7 +7,7 @@
 
 .title {
   font-size: large;
-  color: rgb(180, 180, 180);
+  color:black;
   margin-bottom: 50px;
 }
 
@@ -87,3 +87,5 @@
   margin-left: -20px;
   margin-right: 30px;
 }
+
+

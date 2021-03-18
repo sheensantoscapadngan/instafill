@@ -23,3 +23,11 @@
   --scale: 1;
 
 }
+
+@media screen and (max-width: 1050px){
+  .stylish::after,.stylish::before{
+    display: none;
+  }
+
+
+}

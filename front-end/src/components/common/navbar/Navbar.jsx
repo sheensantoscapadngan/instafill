@@ -62,8 +62,12 @@ export const NavMenu = styled.div`
   white-space: nowrap; 
   justify-content: flex-end;
   justify-content: space-between;
-  @media screen and (max-width: 768px) {
+
+  @media screen and (max-width: 700px) {
     display: none;
+    /*margin-left: 70px;*/
+    
+     
   }
 `;
 

@@ -67,9 +67,9 @@ const MainPage = () =>{
     let formData = new FormData()
     formData.append('master',fileUploadMASTER[0])
     formData.append('pdf', fileUploadPDF[0])
-    clearState();
+    
 
-      
+    clearState();
     axios({
       url: '/process',
       method: "POST",
@@ -77,8 +77,11 @@ const MainPage = () =>{
         'Content-Type': 'multipart/form-data'
       },
       data: formData
-    }).then((res)=>{  
+    }).then((res)=>{ 
+      
     })
+    window.location = "/editPDF";
+
     
   }
     return(

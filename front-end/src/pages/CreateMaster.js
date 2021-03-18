@@ -3,6 +3,7 @@ import './CreateMaster.css'
 import {Navbar} from '../components/common';
 import InputForm from '../components/common/form/inputForms';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {AnimatePresence, motion} from 'framer-motion';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {faTrash, faPlus} from '@fortawesome/free-solid-svg-icons';
 
@@ -10,6 +11,8 @@ library.add(faTrash, faPlus)
 
 
 class CreateMaster extends Component{
+
+
 
     constructor(props) {
         super(props);
@@ -107,7 +110,13 @@ class CreateMaster extends Component{
     render(){
         return(   
             <div>
-                <Navbar />     
+                <Navbar /> 
+            <motion.div
+            initial={{opacity: 1, x: "-100vw"}}
+            animate={{opacity: 1, x: 0}}
+            exit={{opacity: 1, x: "-100vw"}}
+            transition={{type: "spring"}}>
+                    
                 <div className="createMaster">                 
                     <p className="title">This will be your personal information</p>
                     <div className="flex">
@@ -178,6 +187,7 @@ class CreateMaster extends Component{
                     </div>
                     <button className="btns download" onClick={this.downloadDocument}><p>Download Document</p></button>
                 </div>         
+            </motion.div>
             </div>
         );
     }
