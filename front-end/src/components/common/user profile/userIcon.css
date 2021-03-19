@@ -50,8 +50,8 @@ a {
 }
 .logout-icon {
   display: flex;
-  width: 10%;
-  margin: 0% 7% 0% 7%;
+  width: 30px;
+  margin: 0% 20px 0% 15px;
   align-items: flex-end;
 }
 .icon-circle {
@@ -67,6 +67,7 @@ a {
 }
 .icon-circle-small {
   height: 40px;
+  width: 40px;
   background-color: #f8f8f8ee;
   border: 2px solid rgb(0, 132, 255);
   display: flex;
@@ -74,7 +75,7 @@ a {
   border-radius: 50%;
   justify-content: center;
   transition: filter 300ms;
-  margin: 0% 15% 30% 15%;
+  margin: 0% 0% 30% 15%;
 }
 .icon-button:hover {
   filter: brightness(1.2);
@@ -89,7 +90,6 @@ a {
 .menu-dropdown {
   position: absolute;
   top: 58px; /*depende sa height sa navbar*/
-  width: 300px;
   transform: translateX(-42%);
   background-color: white;
   border-radius: var(--border-radius);
@@ -99,6 +99,7 @@ a {
 .logout-menu {
   display: flex;
   justify-content: left;
+  height: 40px;
   transition: background var(--speed);
   border-radius: 0 0 var(--border-radius) var(--border-radius);
   padding: 0.2rem;
@@ -124,13 +125,13 @@ a {
 }
 .icon-space {
   height: 75%;
-  width: 20%;
-  margin: 3% 0 3% 3%;
+  width: 60px;
+  margin: 3% 5px 3% 5px;
 }
 .name-space {
   height: 80%;
-  width: 70%;
-  margin: 1% 0% 0% 2%;
+  margin: 1% 5% 0% 5px;
+  padding-right: 20px;
 }
 .description {
   font-size: small;
@@ -138,24 +139,32 @@ a {
   margin-top: 1%;
 }
 .logout-text {
-  margin-top: 2%;
+  margin-top: 7px;
 }
 
-.menu-dropdown{
+.menu-dropdown {
   visibility: visible;
   -webkit-animation: fadeIn 0.7s;
   animation: fadeIn 0.5s;
 }
 
 @-webkit-keyframes fadeIn {
-  from {opacity: 0;} 
-  to {opacity: 1;}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity:1 ;}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-.logout-text{
+.logout-text {
   color: black;
 }
