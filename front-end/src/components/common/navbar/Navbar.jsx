@@ -52,16 +52,17 @@ export const NavMenu = styled.div`
   display: flex;
   align-items: center;
   margin-right: -24px;
-  margin-left: 450px;
+  width: 100vw;
+  white-space: nowrap; 
+  justify-content: flex-end;
+  
+  
 
   /* Second Nav */
   /* margin-right: 24px; */
 
   /* Third Nav */
-  width: 100vw;
-  white-space: nowrap; 
-  justify-content: flex-end;
-  justify-content: space-between;
+
 
   @media screen and (max-width: 700px) {
     display: none;
