@@ -50,11 +50,32 @@ const createUserDB = (email) =>{
     console.log("USER CREATED")
 }
 
+export const attachFillerListener = (email,setFillerCount)=> {
+    db.collection('users').doc(email).onSnapshot(snapshot=>{
+        let fillerCount = snapshot.data().energy
+        setFillerCount(fillerCount)
+    })
+}
+
 export const addTopupFillers = (email) =>{
     let fillerTopup = 5
     db.collection('users').doc(email).get().then((snapshot)=>{
         let fillerCount = snapshot.data().energy
         db.collection('users').doc(email).set({energy:fillerCount+fillerTopup})
+    })
+}
+
+export const subtractFiller = (email,fillerCost) =>{
+    db.collection('users').doc(email).get().then((snapshot)=>{
+        let fillerCount = snapshot.data().energy
+        db.collection('users').doc(email).set({energy:fillerCount-fillerCost})
+    })
+}
+
+export const getFillerCount = (email) =>{
+    db.collection('users').doc(email).get().then((snapshot)=>{
+        let fillerCount = snapshot.data().energy
+        return fillerCount
     })
 }
 

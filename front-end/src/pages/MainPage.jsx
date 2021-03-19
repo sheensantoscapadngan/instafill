@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useContext} from 'react';
 import './MainPage.css';
 import './tooltip.css';
 import {Button, Popup, DropzoneMASTER, DropzonePDF, Navbar} from '../components/common';
@@ -8,6 +8,8 @@ import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
 import {motion} from 'framer-motion';
 import axios from 'axios';
+import UserProvider, { UserContext } from '../contexts/UserProvider.js'
+import {attachFillerListener} from "../services/firebase"
 
 library.add(faUpload, faPen)
 
@@ -29,6 +31,8 @@ function ThirdButton(){
 };
 const MainPage = () =>{
 
+  let user = useContext(UserContext)
+
   const  pageVariants = {
     in: {
       opacity: 1,
@@ -46,22 +50,22 @@ const MainPage = () =>{
 
   }
 
-
-
   const [buttonPopupPDF, setButtonPopupPDF] = useState(false);
   const [buttonPopupMASTER, setButtonPopupMASTER] = useState(false);
 
   const [fileUploadPDF, setFileUploadPDF] = useState([])
   const [fileUploadMASTER, setFileUploadMASTER] = useState([])
 
+  const [fillerCount,setFillerCount] = useState(0)
+
+  if(user != null){
+    attachFillerListener(user.email,setFillerCount)
+  }
+
   const clearState = () =>{
     setFileUploadPDF([]);
     setFileUploadMASTER([]);
   }
-
-
-
-
 
   if(fileUploadMASTER.length == 1 && fileUploadPDF.length == 1){
     let formData = new FormData()
@@ -86,7 +90,7 @@ const MainPage = () =>{
   }
     return(
       <div className="MainPage" >
-        <Navbar/>
+        <Navbar fillerCount={fillerCount}/>
         <motion.div initial="out" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
           
 

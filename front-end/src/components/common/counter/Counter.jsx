@@ -1,30 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component,useContext,useState} from 'react';
 import './Counter.css';
-class Counter extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            count: 5
-        }
-    }
+import {UserContext} from '../../../contexts/UserProvider.js';
+import { addTopupFillers } from '../../../services/firebase';
 
+function Counter(props){
     //increase value of filler
-    increment = () => {
-        this.setState({count: this.state.count + 1 })
-    }
-    //decrease value of filler
-    decrement = () => {
-        this.setState({count: this.state.count - 1 })
-    }
+    let user = useContext(UserContext)
+    let fillerCount = props.fillerCount
 
-    render(){
+    if(user != null){
         return(
             <div className="counter">
-                <h3>Filler: {this.state.count}</h3>
-
+                <h3>Filler: {fillerCount}</h3>
             </div>
         );
+    }else{
+        return(
+            <div className="counter"></div>
+        )
     }
+    
 }
 
 export default Counter;

@@ -1,5 +1,5 @@
 import React, {useState, useEffect,  createContext} from "react";
-import { auth } from "../services/firebase"
+import { auth} from "../services/firebase"
 export const UserContext = createContext({user: null})
 export default ({children}) => {
   const [user, setuser] = useState(null)

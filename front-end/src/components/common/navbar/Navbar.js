@@ -10,7 +10,7 @@ import Boop from '../boop';
 import UserIcon from '../user profile/userIcon';
 import UserProvider from '../../../contexts/UserProvider.js'
 import Counter from '../counter/Counter';
-const Navbar = () =>{
+const Navbar = (props) =>{
     return(
     <>
         <Nav>
@@ -23,7 +23,7 @@ const Navbar = () =>{
             </NavLink>
             <Bars/>
             <NavMenu>
-            <Counter/>
+            <Counter fillerCount={props.fillerCount}/>
                 
             <a href="https://twitter.com" target="_blank">
                 
