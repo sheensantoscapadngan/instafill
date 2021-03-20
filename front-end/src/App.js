@@ -40,8 +40,7 @@ function App(){
         </div>  
       </UserProvider>
       */
-
-        <Router>
+      <Router>
           <AnimatePresence exitBeforeEnter>
           <Switch>
           <Route exact path='/'>
@@ -55,8 +54,7 @@ function App(){
           </Route>
           </Switch>
           </AnimatePresence>
-
-        </Router>
+      </Router>
     );
   
 };
