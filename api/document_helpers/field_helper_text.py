@@ -27,6 +27,8 @@ def extract_master_dict(file):
     with open(file, 'r') as file:
         raw_master = file.read()
         for pair in raw_master.split(';'):
+            if not any(c.isalpha() for c in pair):
+                continue
             key, value = pair.split(':')
             key = re.sub(r'[^A-Za-z ]+', '', key).lower()
             master_dict[key] = value
@@ -35,13 +37,22 @@ def extract_master_dict(file):
 
 def match_field_to_master(field_fill_positions, master_dict, master_text_embeddings, model):
     instafill_dict = {}
+    used_fields = set()
     for page, fields in field_fill_positions.items():
         field_value_dict = {}
         for field, box_position in fields.items():
+
+            if field in used_fields:
+                continue
+
             max_field, max_score = text_find_match(
                 field, master_text_embeddings, model)
+
             if max_field is None:
                 continue
+
+            print("FIELD IS", field)
+            used_fields.add(field)
             value = master_dict[max_field]
             field_value_dict[field] = {
                 'value': value, 'position': box_position}
