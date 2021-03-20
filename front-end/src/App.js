@@ -46,7 +46,7 @@ function App(){
           <Route exact path='/'>
             <MainPage fillerCount={fillerCount}/>
           </Route>
-          <Route exact path='/createMaster'>
+          <Route exact path='/createMaster' >
             <CreateMaster fillerCount={fillerCount}/>
           </Route>
           <Route exact path='/editPDF'>

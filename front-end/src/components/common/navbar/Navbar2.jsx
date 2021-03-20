@@ -70,6 +70,7 @@ export const NavMenu = styled.div`
     display: flex;
     white-space: nowrap; 
     justify-content: flex-end;
+    margin-left: 250px;
     
   }
 `;

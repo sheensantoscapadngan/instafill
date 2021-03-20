@@ -1,6 +1,6 @@
 import React, {Component, useState} from 'react'
 import './CreateMaster.css'
-import {Navbar} from '../components/common';
+import {Navbar2, Navbar} from '../components/common';
 import InputForm from '../components/common/form/inputForms';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {AnimatePresence, motion} from 'framer-motion';
@@ -107,8 +107,8 @@ class CreateMaster extends Component{
 
     render(){
         return(   
-            <div>
-                <Navbar fillerCount={this.state.fillerCount}/> 
+            <div >
+                <Navbar2 fillerCount={this.state.fillerCount}/> 
             <motion.div
             initial={{opacity: 1, x: "-100vw"}}
             animate={{opacity: 1, x: 0}}

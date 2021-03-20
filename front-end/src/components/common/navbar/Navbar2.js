@@ -1,5 +1,5 @@
 import React from 'react';
-import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from "./Navbar.jsx";
+import { Nav, NavLink, Bars, NavMenu, NavBtn, NavBtnLink } from "./Navbar2.jsx";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faTwitter,
@@ -10,7 +10,7 @@ import Boop from '../boop';
 import UserIcon from '../user profile/userIcon';
 import UserProvider from '../../../contexts/UserProvider.js'
 import Counter from '../counter/Counter';
-const Navbar = (props) =>{
+const Navbar2 = (props) =>{
     return(
     <>
         <Nav>
@@ -59,4 +59,4 @@ const Navbar = (props) =>{
 
 
 
-export default Navbar;
+export default Navbar2;
