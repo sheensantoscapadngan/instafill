@@ -8,8 +8,6 @@ import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
 import {motion} from 'framer-motion';
 import axios from 'axios';
-import UserProvider, { UserContext } from '../contexts/UserProvider.js'
-import {attachFillerListener} from "../services/firebase"
 
 library.add(faUpload, faPen)
 
@@ -29,9 +27,7 @@ function ThirdButton(){
     "Start creating your own master document here! The master document makes the magic work. It's completely quick and easy!"
   );
 };
-const MainPage = () =>{
-
-  let user = useContext(UserContext)
+const MainPage = (props) =>{
 
   const  pageVariants = {
     in: {
@@ -55,12 +51,6 @@ const MainPage = () =>{
 
   const [fileUploadPDF, setFileUploadPDF] = useState([])
   const [fileUploadMASTER, setFileUploadMASTER] = useState([])
-
-  const [fillerCount,setFillerCount] = useState(0)
-
-  if(user != null){
-    attachFillerListener(user.email,setFillerCount)
-  }
 
   const clearState = () =>{
     setFileUploadPDF([]);
@@ -90,7 +80,7 @@ const MainPage = () =>{
   }
     return(
       <div className="MainPage" >
-        <Navbar fillerCount={fillerCount}/>
+        <Navbar fillerCount={props.fillerCount}/>
         <motion.div initial="out" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
           
 

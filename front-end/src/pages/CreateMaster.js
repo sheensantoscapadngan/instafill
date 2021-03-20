@@ -17,6 +17,7 @@ class CreateMaster extends Component{
             data : {},
             newLabel : "",
             newRows : [],
+            fillerCount: props.fillerCount
         }
     }
 
@@ -107,7 +108,7 @@ class CreateMaster extends Component{
     render(){
         return(   
             <div>
-                <Navbar /> 
+                <Navbar fillerCount={this.state.fillerCount}/> 
             <motion.div
             initial={{opacity: 1, x: "-100vw"}}
             animate={{opacity: 1, x: 0}}

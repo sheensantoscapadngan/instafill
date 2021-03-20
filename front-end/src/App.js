@@ -9,14 +9,20 @@ import {signInWithGoogle,signOut} from './services/firebase'
 //Pages
 import MainPage from './pages/MainPage';
 import CreateMaster from './pages/CreateMaster.js';
-import UserProvider from './contexts/UserProvider.js'
 import EditPDF from './pages/EditPDF';
-import {userContext} from './contexts/UserProvider.js'
-
+import {UserContext} from './contexts/UserProvider.js'
 import Paypal from './services/Paypal.js'
+import {attachFillerListener} from "./services/firebase"
 
 function App(){
   const [checkOut,setCheckOut] = useState(0);
+
+  let user = useContext(UserContext)
+  const [fillerCount,setFillerCount] = useState(0)
+
+  if(user != null){
+    attachFillerListener(user.email,setFillerCount)
+  }
     return (  
 
       /*
@@ -35,20 +41,22 @@ function App(){
       </UserProvider>
       */
 
-      <UserProvider>
         <Router>
-    
           <AnimatePresence exitBeforeEnter>
           <Switch>
-          <Route exact path='/' component={MainPage} />
-          <Route exact path='/createMaster' component={CreateMaster}/>
-          <Route exact path='/editPDF' component={EditPDF}/>
+          <Route exact path='/'>
+            <MainPage fillerCount={fillerCount}/>
+          </Route>
+          <Route exact path='/createMaster'>
+            <CreateMaster fillerCount={fillerCount}/>
+          </Route>
+          <Route exact path='/editPDF'>
+            <EditPDF/>
+          </Route>
           </Switch>
           </AnimatePresence>
 
         </Router>
-    </UserProvider>
-
     );
   
 };
