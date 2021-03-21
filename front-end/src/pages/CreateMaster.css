@@ -7,7 +7,7 @@
 
 .title {
   font-size: large;
-  color:black;
+  color: black;
   margin-bottom: 50px;
 }
 
@@ -17,7 +17,7 @@
 
 .divisor {
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
   margin-top: -8px;
   margin-left: 10px;
@@ -49,7 +49,7 @@
 }
 
 .add {
-  margin-top: 20px;  
+  margin-top: 20px;
 }
 
 .dynamic {
@@ -87,5 +87,3 @@
   margin-left: -20px;
   margin-right: 30px;
 }
-
-

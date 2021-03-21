@@ -22,6 +22,7 @@ function UserIcon() {
 
 function NavItem(props) {
   const [open, setOpen] = useState(false);
+
   return(
     <span className='icon-circle' onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <li className='nav-item'>

@@ -143,6 +143,7 @@ a {
 }
 
 .menu-dropdown {
+  z-index: 10;
   visibility: visible;
   -webkit-animation: fadeIn 0.7s;
   animation: fadeIn 0.5s;
