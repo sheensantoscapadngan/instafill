@@ -35,13 +35,22 @@ def extract_master_dict(file):
     return master_dict
 
 
+def process_final_position(box_position, center_x, field):
+    left_point = box_position[0]
+    if left_point[0] <= center_x:  # if line is to be filled up on top
+        print("MODIFIED FOR", field)
+        return ((int(center_x), box_position[0][1]), box_position[1])
+    return box_position
+
+
 def match_field_to_master(field_fill_positions, master_dict, master_text_embeddings, model):
     instafill_dict = {}
     used_fields = set()
     for page, fields in field_fill_positions.items():
         field_value_dict = {}
-        for field, box_position in fields.items():
-
+        for field, content in fields.items():
+            box_position = content['line']
+            center_x = content['center_x']
             if field in used_fields:
                 continue
 
@@ -51,7 +60,9 @@ def match_field_to_master(field_fill_positions, master_dict, master_text_embeddi
             if max_field is None:
                 continue
 
-            print("FIELD IS", field)
+            box_position = process_final_position(
+                box_position, center_x, field)
+
             used_fields.add(field)
             value = master_dict[max_field]
             field_value_dict[field] = {

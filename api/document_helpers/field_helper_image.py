@@ -87,23 +87,30 @@ def match_fields_to_position(fields_dict, pages_data, pages_img):
         for field, field_position in fields.items():
             top_right = field_position['top_right']
             bot_right = field_position['bot_right']
+            bot_left = field_position['bot_left']
 
             base_x = top_right[0]
             base_y = (top_right[1] + bot_right[1]) // 2
 
             base_point = Point((base_x, base_y))
+            center_x = (bot_left[0]+bot_right[0]) // 2
+
             closest_line = find_closest(base_point, horizontal_lines)
             line = closest_line.retrieve_line_definition()
             img = cv2.line(img, line[0], line[1], (128, 128, 128), 3)
 
             # if line is part of a box or not
             if closest_line.retrieve_line_definition() not in line_to_box:
-                field_to_position[field] = closest_line.retrieve_line_definition()
+                field_to_position[field] = {
+                    'line': closest_line.retrieve_line_definition(),
+                    'center_x': center_x}
                 filled_lines.add(closest_line.retrieve_line_definition())
             else:
                 box = boxes[line_to_box[closest_line.retrieve_line_definition()]]
                 bottom_line = box.retrieve_bottom_line()
-                field_to_position[field] = bottom_line.retrieve_line_definition()
+                field_to_position[field] = {
+                    'line': bottom_line.retrieve_line_definition(),
+                    'center_x': center_x}
                 filled_lines.add(bottom_line.retrieve_line_definition())
 
             '''
