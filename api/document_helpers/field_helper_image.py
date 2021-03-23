@@ -6,17 +6,16 @@ from api.document_helpers.field_helper_geometry import detect_fillable_boxes, fi
 from api.classes.Geometry import Point
 
 
-def convert_pdf_to_img(filename):
+def convert_pdf_to_img(file, pdf_dir):
     pages_img = []
-    doc = fitz.open(filename)
+    doc = fitz.open(stream=file, filetype="pdf")
     for i in range(len(doc)):
         page = doc.loadPage(i)
         pix = page.getPixmap(colorspace="gray")
-        output = "page_"+str(i)+'.png'
+        output = pdf_dir + "/page_"+str(i)+'.png'
         pix.writePNG(output)
         page_img = cv2.imread(output, cv2.COLOR_BGR2GRAY)
         pages_img.append(page_img)
-        os.remove(output)
     return pages_img
 
 

@@ -23,9 +23,10 @@ def receive_request_from_client():
     pdf = uploaded_files['pdf'].read()
     master = uploaded_files['master'].read()
 
-    pdf_uri, master_uri = save_pdf_and_master(pdf, master)
+    pdf_dir, pages_img, master_uri = save_pdf_and_master(pdf, master)
+
     instafilled, fillable_positions = process_request(
-        pdf_uri, master_uri, app.model)
+        pdf_dir, pages_img, master_uri, app.model)
     json_result = {'instafilled': instafilled,
                    'fillable_positions': fillable_positions}
     print("JSON RESULT IS", json_result)

@@ -6,8 +6,11 @@ from pathlib import Path
 import random
 import string
 import os
-from api.json_helpers.func import extract_coords
+import io
+import cv2
+from api.json_helpers.func import extract_coords, extract_coords_from_img
 from api.cloud_storage.cloud_storage_helper import delete_json_from_storage
+from api.document_helpers.field_helper_image import convert_pdf_to_img
 
 BATCH_SIZE = 1
 
@@ -17,20 +20,39 @@ def save_pdf_and_master(pdf, master):
     string_length = 12
     filename = ''.join(random.choice(string.ascii_uppercase + string.digits)
                        for _ in range(string_length))
-    pdf_filename = parent_dir + filename + "_pdf.pdf"
-    master_filename = parent_dir + filename + "_master.txt"
-    pdf_filepath = Path(pdf_filename)
-    master_filepath = Path(master_filename)
 
-    pdf_filepath.write_bytes(pdf)
+    pdf_filedir = parent_dir + 'pdf-img/' + filename
+    Path(pdf_filedir).mkdir(parents=True, exist_ok=True)
+
+    pages_img = convert_pdf_to_img(pdf, pdf_filedir)
+    master_filename = parent_dir + 'master/' + filename + "_master.txt"
+    master_filepath = Path(master_filename)
     master_filepath.write_bytes(master)
 
-    return pdf_filename, master_filename
+    return pdf_filedir, pages_img, master_filename
 
 
 def delete_pdf_and_master(pdf_filepath, master_document_filepath):
     os.remove(pdf_filepath)
     os.remove(master_document_filepath)
+
+
+def read_text_from_img(pages_img):
+    client = vision.ImageAnnotatorClient()
+    fields = {}
+    for page_number in range(len(pages_img)):
+        page = pages_img[page_number]
+
+        # convert img to bytes
+        is_success, im_buf_arr = cv2.imencode(".jpg", page)
+        byte_im = im_buf_arr.tobytes()
+
+        image = vision.Image(content=byte_im)
+        response = client.text_detection(image=image)
+        texts = response.text_annotations
+
+        page_coords = extract_coords_from_img(texts)
+        fields[page_number+1] = page_coords
 
 
 def read_text_from_document(gcs_source_uri, gcs_destination_uri="gs://instafill/result.json"):
@@ -72,9 +94,14 @@ def read_text_from_document(gcs_source_uri, gcs_destination_uri="gs://instafill/
         output = blob
         json_string = output.download_as_string()
         response = json.loads(json_string)
+        with open('json.txt', 'w') as outfile:
+            json.dump(response, outfile)
         page_coords = extract_coords(response)
         fields[i+1] = page_coords
         delete_json_from_storage(blob.name)
 
     print("FINISHED VISION OPERATION")
     return fields
+
+
+# detect_text("E:\PROJECTS\instafill_local\instafill\page_1.png")
