@@ -46,20 +46,29 @@ def process_final_position(box_position, center_x, field):
 def match_field_to_master(field_fill_positions, master_dict, master_text_embeddings, model):
     instafill_dict = {}
     used_fields = set()
+    used_lines_dict = {}
     for page, fields in field_fill_positions.items():
+        used_lines = []
         field_value_dict = {}
         for field, content in fields.items():
             box_position = content['line']
             center_x = content['center_x']
-            if field in used_fields:
-                continue
 
             max_field, max_score = text_find_match(
                 field, master_text_embeddings, model)
 
+            # handle repeating fields
+            if '*_' in field:
+                field_value_dict[field] = {
+                    'value': '', 'position': box_position
+                }
+                used_lines.append(box_position)
+                continue
+
             if max_field is None:
                 continue
 
+            used_lines.append(box_position)
             box_position = process_final_position(
                 box_position, center_x, field)
 
@@ -67,8 +76,10 @@ def match_field_to_master(field_fill_positions, master_dict, master_text_embeddi
             value = master_dict[max_field]
             field_value_dict[field] = {
                 'value': value, 'position': box_position}
+
+        used_lines_dict[page] = used_lines
         instafill_dict[page] = field_value_dict
-    return instafill_dict
+    return instafill_dict, used_lines_dict
 
 
 def define_train_examples():

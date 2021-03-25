@@ -27,6 +27,10 @@ def receive_request_from_client():
 
     instafilled, fillable_positions = process_request(
         pdf_dir, pages_img, master_uri, app.model)
+
+    if instafilled is None:
+        return "SORRY, THERE IS AN ERROR."
+
     json_result = {'instafilled': instafilled,
                    'fillable_positions': fillable_positions}
     print("JSON RESULT IS", json_result)

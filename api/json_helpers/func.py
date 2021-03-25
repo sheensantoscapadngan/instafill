@@ -69,23 +69,35 @@ def extract_words_and_positions(response):
     return result
 
 
-def extract_coords_from_img(response):
+def get_final_pos(start_pos, end_pos):
+    pos = {}
+    pos['top_left'] = (int(start_pos[0]), int(start_pos[1]))
+    pos['bot_left'] = (int(start_pos[6]), int(start_pos[7]))
+    pos['top_right'] = (int(end_pos[2]), int(end_pos[3]))
+    pos['bot_right'] = (int(end_pos[4]), int(end_pos[5]))
+    return pos
+
+
+def display_field_boxes(fields, img):
+    for field, positions in fields.items():
+        for label, position in positions.items():
+            img = cv2.circle(img, position, radius=1,
+                             color=(0, 0, 255), thickness=-1)
+    cv2.imshow("res", img)
+    cv2.waitKey(0)
+
+
+def extract_coords_from_img(response, page):
     fields = {}
     words_and_positions = extract_words_and_positions(response)
-
-    last_name = ['last name', 'surname', 'family name']
-    first_name = ['first name', 'given name', 'forename']
-    names = ['name', 'complete name', 'students name']
-    last_name_state, first_name_state = False, False
-
-    current_subject = None
-    subjects = ['father', 'mother', 'fathers', 'mothers']
     used_fields = set()
+    repeat_count = 0
 
     ind = 0
     ext_data_list = words_and_positions.split('\n')
     while ind < len(ext_data_list):
         current_word, current_pos = extract_ext_details(ext_data_list[ind])
+        start_pos = current_pos
         ind += 1
         while ind < len(ext_data_list):
             candidate_line = ext_data_list[ind]
@@ -103,4 +115,12 @@ def extract_coords_from_img(response):
         if current_word is None:
             continue
         if any(c for c in current_word if c.isalnum()):
-            print("CURRENT WORD IS", current_word)
+            final_pos = get_final_pos(start_pos, current_pos)
+            if current_word not in used_fields:
+                fields[current_word] = final_pos
+                used_fields.add(current_word)
+            else:
+                current_repeat_val = "*_" + str(repeat_count)
+                repeat_count += 1
+                fields[current_repeat_val] = final_pos
+    return fields

@@ -1,6 +1,7 @@
 from api.classes.Geometry import Line, Box
-
 from shapely.geometry import LineString
+
+DISTANCE_THRESHOLD = 7.0
 
 
 def filter_non_lines(cnts):
@@ -59,8 +60,10 @@ def find_closest(point, horizontal_lines):
         if dist < min_dist:
             min_dist = dist
             best_line = line
-            best_x_diff = 10**9
+            best_x_diff = x_diff
         elif dist == min_dist and x_diff < best_x_diff:
             best_x_diff = x_diff
             best_line = line
+    if min_dist > DISTANCE_THRESHOLD:
+        return None
     return best_line

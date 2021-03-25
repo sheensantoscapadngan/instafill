@@ -4,6 +4,7 @@ import numpy as np
 import os
 from api.document_helpers.field_helper_geometry import detect_fillable_boxes, filter_non_lines, define_line_objects, find_closest
 from api.classes.Geometry import Point
+import glob
 
 
 def convert_pdf_to_img(file, pdf_dir):
@@ -19,6 +20,14 @@ def convert_pdf_to_img(file, pdf_dir):
     return pages_img
 
 
+def read_pdf_img(pdf_dir):
+    pages_img = []
+    for filename in glob.iglob(pdf_dir + '**/*.png', recursive=True):
+        img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+        pages_img.append(img)
+    return pages_img
+
+
 def detect_lines(pages_img):
     pages_data = {}
     for i in range(len(pages_img)):
@@ -28,8 +37,8 @@ def detect_lines(pages_img):
 
         vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 15))
         horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 1))
-        horizontal_connect_kernel = np.ones((1, 10), np.uint8)
-        vertical_connect_kernel = np.ones((10, 1), np.uint8)
+        horizontal_connect_kernel = np.ones((1, 5), np.uint8)
+        vertical_connect_kernel = np.ones((5, 1), np.uint8)
 
         detected_horizontal_lines = cv2.morphologyEx(
             thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=1)
@@ -42,6 +51,7 @@ def detect_lines(pages_img):
             detected_horizontal_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         horizontal_cnts = horizontal_cnts[0] if len(
             horizontal_cnts) == 2 else horizontal_cnts[1]
+
         filtered_horizontal_cnts = filter_non_lines(horizontal_cnts)
 
         detected_vertical_lines = cv2.morphologyEx(
@@ -91,15 +101,24 @@ def match_fields_to_position(fields_dict, pages_data, pages_img):
             base_x = top_right[0]
             base_y = (top_right[1] + bot_right[1]) // 2
 
+            img = cv2.circle(img, (base_x, base_y), radius=1,
+                             color=(0, 0, 255), thickness=-1)
+
             base_point = Point((base_x, base_y))
             center_x = (bot_left[0]+bot_right[0]) // 2
 
             closest_line = find_closest(base_point, horizontal_lines)
+            if closest_line is None:
+                continue
             line = closest_line.retrieve_line_definition()
-            img = cv2.line(img, line[0], line[1], (128, 128, 128), 3)
 
             # if line is part of a box or not
             if closest_line.retrieve_line_definition() not in line_to_box:
+                closest_line_def = closest_line.retrieve_line_definition()
+                img = cv2.line(
+                    img, closest_line_def[0], closest_line_def[1], (128, 128, 128), 3)
+                img = cv2.putText(
+                    img, field, closest_line_def[0], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 200, 0), 1)
                 field_to_position[field] = {
                     'line': closest_line.retrieve_line_definition(),
                     'center_x': center_x}
@@ -107,29 +126,32 @@ def match_fields_to_position(fields_dict, pages_data, pages_img):
             else:
                 box = boxes[line_to_box[closest_line.retrieve_line_definition()]]
                 bottom_line = box.retrieve_bottom_line()
+                closest_line_def = bottom_line.retrieve_line_definition()
+                img = cv2.line(
+                    img, closest_line_def[0], closest_line_def[1], (128, 128, 128), 3)
+                img = cv2.putText(
+                    img, field, closest_line_def[0], cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 200, 0), 1)
                 field_to_position[field] = {
                     'line': bottom_line.retrieve_line_definition(),
                     'center_x': center_x}
                 filled_lines.add(bottom_line.retrieve_line_definition())
 
-            '''
-            cv2.imshow("img", img)
-            cv2.setMouseCallback("img",onMouse)
-            cv2.setMouseCallback("cnt", onMouse)
-            cv2.waitKey(0)
-            '''
-            fields_to_position[page] = field_to_position
+        cv2.imshow("filled", img)
+        fields_to_position[page] = field_to_position
 
-    # identify vacant lines
-    for page, _ in fields_dict.items():
+    return fields_to_position, pages_data
+
+
+def extract_fillable_positions(pages_data, used_lines_dict):
+    fillable_lines = {}
+    for page, used_lines in used_lines_dict.items():
         horizontal_lines, _, _ = pages_data[page]
         page_fillables = []
         for line in horizontal_lines:
-            if line.retrieve_line_definition() not in filled_lines:
+            if line.retrieve_line_definition() not in used_lines:
                 page_fillables.append(line.retrieve_line_definition())
         fillable_lines[page] = page_fillables
-
-    return fields_to_position, fillable_lines
+    return fillable_lines
 
 
 def show_fields(fields_list, pages_img):
@@ -156,8 +178,7 @@ def show_fields(fields_list, pages_img):
         cv2.waitKey(0)
 
 
-def extract_field_fill_positions(fields, file):
-    pages_img = convert_pdf_to_img(file)
-    # show_fields(fields,pages_img)
+def extract_field_fill_positions(fields, pdf_dir):
+    pages_img = read_pdf_img(pdf_dir)
     pages_data = detect_lines(pages_img)
     return match_fields_to_position(fields, pages_data, pages_img)
