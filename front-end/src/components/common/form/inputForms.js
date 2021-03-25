@@ -4,11 +4,11 @@ import './inputForms.css'
 class InputForm extends Component {
 
     handleTextChange = (event) => {
-        var smallLabels = ""
+        var smallLabels = "";
         if (this.props.smallLabel != undefined){
             smallLabels = this.props.smallLabel
         }
-        this.props.parentCallback(this.props.label+smallLabels+"&#!::!#&"+event.target.value);
+        this.props.parentCallback(this.props.label.replace("#", "number")+smallLabels+"&#!::!#&"+event.target.value);
     }
     
     render(){
