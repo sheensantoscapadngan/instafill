@@ -109,7 +109,7 @@ class CreateMaster extends Component{
         return(   
             <div >
                 <Navbar2 fillerCount={this.state.fillerCount}/> 
-            <motion.div
+            <div
             initial={{opacity: 1, x: "-100vw"}}
             animate={{opacity: 1, x: 0}}
             exit={{opacity: 1, x: "-100vw"}}
@@ -185,7 +185,7 @@ class CreateMaster extends Component{
                     </div>
                     <button className="btns download" onClick={this.downloadDocument}><p>Download Document</p></button>
                 </div>         
-            </motion.div>
+            </div>
             </div>
         );
     }

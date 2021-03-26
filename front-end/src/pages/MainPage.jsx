@@ -8,7 +8,7 @@ import { faUpload, faPen } from '@fortawesome/free-solid-svg-icons';
 import {Link} from 'react-router-dom';
 import {motion} from 'framer-motion';
 import axios from 'axios';
-
+import EditPDF from './EditPDF';
 library.add(faUpload, faPen)
 
 //messages for popup
@@ -51,6 +51,7 @@ const MainPage = (props) =>{
 
   const [fileUploadPDF, setFileUploadPDF] = useState([])
   const [fileUploadMASTER, setFileUploadMASTER] = useState([])
+  console.log(fileUploadPDF.length)
 
   const clearState = () =>{
     setFileUploadPDF([]);
@@ -144,7 +145,12 @@ const MainPage = (props) =>{
             <DropzoneMASTER setFileUploadMASTER={setFileUploadMASTER}></DropzoneMASTER>
               
             </div>
+
           </Popup>
+            <div className="dont-display">
+              <EditPDF fileUploadPDF={fileUploadPDF}> </EditPDF>
+            </div>
+          
         </div>
     )
 
