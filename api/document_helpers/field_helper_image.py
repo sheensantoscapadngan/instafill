@@ -32,16 +32,20 @@ def detect_lines(pages_img):
     pages_data = {}
     for i in range(len(pages_img)):
         img = pages_img[i]
+
+        #blur = cv2.GaussianBlur(img, (5, 5), 0)
         thresh = cv2.threshold(
             img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+        #thresh = cv2.Canny(thresh, 50, 80, apertureSize=3)
 
         vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 15))
         horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 1))
-        horizontal_connect_kernel = np.ones((1, 5), np.uint8)
-        vertical_connect_kernel = np.ones((5, 1), np.uint8)
+        horizontal_connect_kernel = np.ones((1, 4), np.uint8)
+        vertical_connect_kernel = np.ones((4, 1), np.uint8)
 
         detected_horizontal_lines = cv2.morphologyEx(
             thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=1)
+
         detected_horizontal_lines = cv2.dilate(
             detected_horizontal_lines, horizontal_connect_kernel, iterations=1)
         detected_horizontal_lines = cv2.erode(
@@ -136,7 +140,6 @@ def match_fields_to_position(fields_dict, pages_data, pages_img):
                     'center_x': center_x}
                 filled_lines.add(bottom_line.retrieve_line_definition())
 
-        cv2.imshow("filled", img)
         fields_to_position[page] = field_to_position
 
     return fields_to_position, pages_data

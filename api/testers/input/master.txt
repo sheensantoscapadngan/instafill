@@ -11,3 +11,4 @@ Phone number:09957663043;
 Personal number:09957663043;
 Personal Email:sdcapadngan@cvisc.pshs.edu.ph;
 Sex:M;
+Birthday:March 7,2003;

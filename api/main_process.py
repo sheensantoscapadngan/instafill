@@ -24,14 +24,16 @@ def process_request(pdf_dir, pages_img, master_document_filepath, model):
             pages_data, used_lines_dict)
 
         show_instafill_result(
-            instafill_dict, "E:\PROJECTS\instafill_local\instafill\page_0.png")
+            instafill_dict, pages_img)
 
         show_fillable_positions(
-            fillable_positions, "E:\PROJECTS\instafill_local\instafill\page_0.png")
+            fillable_positions, pages_img)
 
         delete_pdf_and_master(pdf_dir, master_document_filepath)
         return instafill_dict, fillable_positions
+
     except Exception as e:
         print(e)
         delete_pdf_and_master(pdf_dir, master_document_filepath)
         return None, None
+    

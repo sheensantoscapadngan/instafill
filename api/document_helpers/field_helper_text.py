@@ -2,7 +2,7 @@ from sentence_transformers import SentenceTransformer, util, InputExample, losse
 from torch.utils.data import DataLoader
 import re
 
-MATCH_THRESHOLD = 0.55
+MATCH_THRESHOLD = 0.68
 
 
 def extract_master_text_embeddings(master_dict, model):
@@ -38,7 +38,6 @@ def extract_master_dict(file):
 def process_final_position(box_position, center_x, field):
     left_point = box_position[0]
     if left_point[0] <= center_x:  # if line is to be filled up on top
-        print("MODIFIED FOR", field)
         return ((int(center_x), box_position[0][1]), box_position[1])
     return box_position
 
@@ -51,6 +50,7 @@ def match_field_to_master(field_fill_positions, master_dict, master_text_embeddi
         used_lines = []
         field_value_dict = {}
         for field, content in fields.items():
+            print("CHECKING", field)
             box_position = content['line']
             center_x = content['center_x']
 
@@ -74,6 +74,7 @@ def match_field_to_master(field_fill_positions, master_dict, master_text_embeddi
 
             used_fields.add(field)
             value = master_dict[max_field]
+            print("MATCHING", field, "TO", value)
             field_value_dict[field] = {
                 'value': value, 'position': box_position}
 

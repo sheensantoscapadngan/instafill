@@ -39,6 +39,9 @@ def is_connected(current_pos, candidate_pos):
     vertical_thresh = 5
     horizontal_thresh = 15
 
+    if len(current_pos) < 8 or len(candidate_pos) < 8:
+        return False
+
     # current pos
     bot_right = (float(current_pos[4]),
                  float(current_pos[5]))

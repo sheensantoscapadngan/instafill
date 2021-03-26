@@ -1,10 +1,9 @@
 import cv2
 
 
-def show_instafill_result(instafill_dict, img):
-    img = cv2.imread(
-        img, cv2.IMREAD_GRAYSCALE)
+def show_instafill_result(instafill_dict, pages_img):
     for page, fields in instafill_dict.items():
+        img = pages_img[page-1]
         for field, content in fields.items():
             value = content['value']
             position = content['position']
@@ -14,13 +13,11 @@ def show_instafill_result(instafill_dict, img):
         cv2.waitKey(0)
 
 
-def show_fillable_positions(fillable_positions, img):
-    img = cv2.imread(
-        img, cv2.IMREAD_GRAYSCALE)
+def show_fillable_positions(fillable_positions, pages_img):
     for page, lines in fillable_positions.items():
+        img = pages_img[page-1]
         for line in lines:
             img = cv2.line(img, line[0], line[1], (0, 255, 0), thickness=3)
-
         cv2.imshow("fillable_positions", img)
         cv2.waitKey(0)
 

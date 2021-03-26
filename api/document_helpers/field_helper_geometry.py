@@ -1,7 +1,7 @@
 from api.classes.Geometry import Line, Box
 from shapely.geometry import LineString
 
-DISTANCE_THRESHOLD = 7.0
+DISTANCE_THRESHOLD = 6
 
 
 def filter_non_lines(cnts):
