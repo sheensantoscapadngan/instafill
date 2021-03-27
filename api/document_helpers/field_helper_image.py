@@ -6,27 +6,20 @@ from api.document_helpers.field_helper_geometry import detect_fillable_boxes, fi
 from api.classes.Geometry import Point
 import glob
 
+def pix2np(pix):
+    im = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
+    im = np.ascontiguousarray(im[..., [2, 1, 0]])
+    return im
 
-def convert_pdf_to_img(file, pdf_dir):
+def convert_pdf_to_img(file):
     pages_img = []
     doc = fitz.open(stream=file, filetype="pdf")
     for i in range(len(doc)):
-        page = doc.loadPage(i)
-        pix = page.getPixmap(colorspace="gray")
-        output = pdf_dir + "/page_"+str(i)+'.png'
-        pix.writePNG(output)
-        page_img = cv2.imread(output, cv2.COLOR_BGR2GRAY)
-        pages_img.append(page_img)
-    return pages_img
-
-
-def read_pdf_img(pdf_dir):
-    pages_img = []
-    for filename in glob.iglob(pdf_dir + '**/*.png', recursive=True):
-        img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+        pix = doc.getPagePixmap(0,alpha=False)
+        img = pix2np(pix)
+        img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         pages_img.append(img)
     return pages_img
-
 
 def detect_lines(pages_img):
     pages_data = {}
@@ -181,7 +174,6 @@ def show_fields(fields_list, pages_img):
         cv2.waitKey(0)
 
 
-def extract_field_fill_positions(fields, pdf_dir):
-    pages_img = read_pdf_img(pdf_dir)
+def extract_field_fill_positions(fields,pages_img):
     pages_data = detect_lines(pages_img)
     return match_fields_to_position(fields, pages_data, pages_img)

@@ -1,7 +1,8 @@
 from sentence_transformers import SentenceTransformer
 from api.main_process import process_request
-from api.document_helpers.pdf_helper import save_pdf_and_master
 from flask import Flask, jsonify, request
+from api.document_helpers.field_helper_image import convert_pdf_to_img
+from api.document_helpers.field_helper_text import convert_bytes_to_string
 
 app = Flask(__name__)
 
@@ -18,15 +19,14 @@ def main():
 def receive_request_from_client():
 
     uploaded_files = request.files
-    print("UPLOADED FILES:", uploaded_files)
 
     pdf = uploaded_files['pdf'].read()
     master = uploaded_files['master'].read()
 
-    pdf_dir, pages_img, master_uri = save_pdf_and_master(pdf, master)
+    pages_img = convert_pdf_to_img(pdf)
+    master_document = convert_bytes_to_string(master)
 
-    instafilled, fillable_positions = process_request(
-        pdf_dir, pages_img, master_uri, app.model)
+    instafilled, fillable_positions = process_request(pages_img, master_document, app.model)
 
     if instafilled is None:
         return "SORRY, THERE IS AN ERROR."

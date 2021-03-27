@@ -1,42 +1,9 @@
-import json
-import re
 from google.cloud import vision
-from google.cloud import storage
-from pathlib import Path
-import random
-import string
-import os
-import io
 import cv2
 from api.json_helpers.func import extract_coords_from_img
-from api.cloud_storage.cloud_storage_helper import delete_json_from_storage
-from api.document_helpers.field_helper_image import convert_pdf_to_img
-import shutil
+import os
 
-BATCH_SIZE = 1
-
-
-def save_pdf_and_master(pdf, master):
-    parent_dir = 'api/cloud_storage/pdf_files/'
-    string_length = 12
-    filename = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                       for _ in range(string_length))
-
-    pdf_filedir = parent_dir + 'pdf-img/' + filename
-    Path(pdf_filedir).mkdir(parents=True, exist_ok=True)
-
-    pages_img = convert_pdf_to_img(pdf, pdf_filedir)
-    master_filename = parent_dir + 'master/' + filename + "_master.txt"
-    master_filepath = Path(master_filename)
-    master_filepath.write_bytes(master)
-
-    return pdf_filedir, pages_img, master_filename
-
-
-def delete_pdf_and_master(pdf_dir, master_document_filepath):
-    shutil.rmtree(pdf_dir)
-    os.remove(master_document_filepath)
-
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "E:\PROJECTS\instafill_backend\instafill-6fe7e4e642d1.json"
 
 def read_text_from_img(pages_img):
     client = vision.ImageAnnotatorClient()

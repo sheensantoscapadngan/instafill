@@ -1,10 +1,8 @@
 from google.cloud import storage
 import os
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "E:\PROJECTS\instafill_backend\instafill-6fe7e4e642d1.json"
 client = storage.Client(project='instafill')
 bucket = client.get_bucket('instafill')
-
 
 def upload_pdf_to_storage(source_file_name):
     blob_name = source_file_name.split('/')[-1]

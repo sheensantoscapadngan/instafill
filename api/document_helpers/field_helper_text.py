@@ -5,6 +5,9 @@ import re
 MATCH_THRESHOLD = 0.68
 
 
+def convert_bytes_to_string(master_bytes):
+    return "".join(map(chr,master_bytes))
+
 def extract_master_text_embeddings(master_dict, model):
     master_text_embeddings = {}
     for key, _ in master_dict.items():
@@ -22,16 +25,14 @@ def text_find_match(document_text, master_text_embeddings, model):
     return max_field, max_score
 
 
-def extract_master_dict(file):
+def extract_master_dict(master_document):
     master_dict = {}
-    with open(file, 'r') as file:
-        raw_master = file.read()
-        for pair in raw_master.split(';'):
-            if not any(c.isalpha() for c in pair):
-                continue
-            key, value = pair.split(':')
-            key = re.sub(r'[^A-Za-z ]+', '', key).lower()
-            master_dict[key] = value
+    for pair in master_document.split(';'):
+        if not any(c.isalpha() for c in pair):
+            continue
+        key, value = pair.split(':')
+        key = re.sub(r'[^A-Za-z ]+', '', key).lower()
+        master_dict[key] = value
     return master_dict
 
 
