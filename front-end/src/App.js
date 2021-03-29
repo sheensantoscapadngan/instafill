@@ -19,6 +19,9 @@ function App(){
 
   let user = useContext(UserContext)
   const [fillerCount,setFillerCount] = useState(0)
+  const [pdfFile,setPdfFile] = useState(10)
+
+  console.log("PDF FILE IN APP.JS",pdfFile)
 
   if(user != null){
     attachFillerListener(user.email,setFillerCount)
@@ -44,13 +47,13 @@ function App(){
           <AnimatePresence exitBeforeEnter>
           <Switch>
           <Route exact path='/'>
-            <MainPage fillerCount={fillerCount}/>
+            <MainPage fillerCount={fillerCount} setPdfFile={setPdfFile}/>
           </Route>
           <Route exact path='/createMaster' >
             <CreateMaster fillerCount={fillerCount}/>
           </Route>
           <Route exact path='/editPDF'>
-            <EditPDF/>
+            <EditPDF fillerCount={fillerCount} pdfFile={pdfFile}/>  
           </Route>
           </Switch>
           </AnimatePresence>

@@ -3,7 +3,6 @@ from api.document_helpers.field_helper_image import extract_field_fill_positions
 from api.document_helpers.field_helper_text import extract_master_text_embeddings, extract_master_dict, match_field_to_master
 from api.testers.scripts.tester import show_instafill_result, show_fillable_positions
 
-
 def process_request(pages_img, master_document, model):
     try:
         # -------Analyze PDF to extract text"

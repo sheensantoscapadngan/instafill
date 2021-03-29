@@ -1,44 +1,40 @@
 import {Navbar} from '../components/common';
-import React, { useState } from 'react';
+import React, { useState,useEffect,useRef} from 'react';
 
-
-import {DropzonePDF} from '../components/common';
 import './EditPDF.css';
 
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-const EditPDF = () => {
+
+const EditPDF = (props) => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [file, setFile] = useState([]);
-  const [fileUploadPDFs, setFileUploadPDFs] = useState();
-
-
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
 
+  const nextPage=()=>{
+    if(pageNumber+1 <= numPages)
+      setPageNumber(pageNumber+1)
+  }
+  
+  const prevPage=()=>{
+    if(pageNumber-1 > 0)
+      setPageNumber(pageNumber-1)
+  }
+
   return (
     <div >
-
-        <Navbar/>
-        <div className="dont-display">
-        <div className="editpdf">
-            <DropzonePDF setFileUploadPDFs={setFileUploadPDFs}/> 
-            </div>
-      <Document
-        file={fileUploadPDFs}
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
-         <Page pageNumber={pageNumber} />
-      </Document>
-      </div>
-     
-      <p>Page {pageNumber} of {numPages}</p>
-      <p>Page {pageNumber} of {numPages}</p>
-      <p>Page {pageNumber} of {numPages}</p>
-      <h1>yolo</h1>
+        <Navbar fillerCount={props.fillerCount}/>
+        <Document
+          file={props.pdfFile}
+          onLoadSuccess={onDocumentLoadSuccess}>
+            <Page pageNumber={pageNumber} />
+        </Document>
+        <p>Page {pageNumber} of {numPages}</p>
+        <button onClick={nextPage}>Next</button>
+        <button onClick={prevPage}>Previous</button>
     </div>
   );
 }
