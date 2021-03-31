@@ -29,7 +29,7 @@ const EditPDF = (props) => {
   const [canvasBounds,setCanvasBounds] = useState(null)
   const [canvasOffset, setCanvasOffset] = useState({x:0,y:0})
   const [attachedMouseEvent,setAttachedMouseEvent] = useState(false)
-  const [canvasDims,setCanvasDims] = useState([0,0])
+  const [pdfDims,setPdfDims] = useState([0,0])
 
   let startPosition = {x:0,y:0}
   let holdState = false
@@ -52,16 +52,14 @@ const EditPDF = (props) => {
     if(pdfCanvas != null){  
       let canvasImg = pdfCanvasImages[pageNumber]
       if(canvasImg == null) return
-      pdfCanvas.width = canvasDims[0]
-      pdfCanvas.height = canvasDims[1]
-      
+    
       let bounds = pdfCanvas.getBoundingClientRect()
       let offset = {x:bounds.left,y:bounds.top}
 
       setCanvasOffset(offset) 
       setCanvasBounds(bounds)  
     }
-  },[pdfCanvas,canvasDims])
+  },[pdfCanvas,pdfDims])
 
   const onDocumentLoadSuccess=({ numPages })=>{
     setNumPages(numPages);
@@ -85,9 +83,7 @@ const EditPDF = (props) => {
   }
 
   const onPageLoadSuccess=({width,height})=>{
-    if(canvasDims[0] != width && canvasDims[1] != height)
-      setCanvasDims([width,height])
-
+      setPdfDims([width,height])
   }
 
   const nextPage=()=>{
@@ -214,14 +210,16 @@ const EditPDF = (props) => {
       pdfContext.fillText(textObject.value,textObject.x,textObject.y)
     }
   }
-
+  
   const savePdf=()=>{
     let positionDicts = {}
     for(let pageIter in textObjects){
       let pageObjects = []
       for(let objectIter in textObjects[pageIter]){
         let object = textObjects[pageIter][objectIter]
-        pageObjects.push({"position":[object.x,object.y],"value":object.value,
+        let normalizedPosition = [object.x/pdfCanvas.width,object.y/pdfCanvas.height]
+        let scaledPosition = [normalizedPosition[0]*pdfDims[0],normalizedPosition[1]*pdfDims[1]]
+        pageObjects.push({"position":scaledPosition,"value":object.value,
                           "fontSize":object.fontSize})
       }
       positionDicts[pageIter] = pageObjects
@@ -243,6 +241,7 @@ const EditPDF = (props) => {
         <p onClick={savePdf}>Page {pageNumber} of {numPages}</p>
         <button onClick={nextPage}>Next</button>
         <button onClick={prevPage}>Previous</button>
+        
     </div>
   );
 }
