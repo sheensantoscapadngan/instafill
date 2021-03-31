@@ -64,10 +64,6 @@ const MainPage = (props) =>{
     history.push('editPDF')
   }
 
-  const test =(e)=>{
-
-  }
-  
   const getPdfUrl=(file)=>{
       return URL.createObjectURL(file)
   }
@@ -78,7 +74,8 @@ const MainPage = (props) =>{
     formData.append('pdf', fileUploadPDF[0])
     
     let pdfUrl = getPdfUrl(fileUploadPDF[0])
-    props.setPdfFile(pdfUrl)
+    props.setPdfFile(fileUploadPDF[0])
+    props.setPdfFileUrl(pdfUrl)
 
     /*
     clearState();
@@ -92,8 +89,8 @@ const MainPage = (props) =>{
     }).then((res)=>{ 
   
     })
-    */  
-
+    */
+  
     routeToEditPdf()
   }
     return(
@@ -164,7 +161,6 @@ const MainPage = (props) =>{
           
         </div>
     )
-
 
 }
 

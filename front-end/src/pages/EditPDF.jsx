@@ -1,5 +1,6 @@
 import {Navbar} from '../components/common';
 import React, { useState,useEffect,useRef} from 'react';
+import {preprocessPdf} from '../pdflib/processPdf.js'
 
 import './EditPDF.css';
 
@@ -7,12 +8,13 @@ import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 class TextObject{
-  constructor(value,x,y,width,height){
+  constructor(value,x,y,width,height,fontSize){
     this.value = value
     this.x = x
     this.y = y
     this.width = width
     this.height = height
+    this.fontSize = fontSize
   }
 }
 
@@ -20,13 +22,14 @@ const EditPDF = (props) => {
 
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [textObjects, setTextObjects] = useState([])
+  const [textObjects, setTextObjects] = useState({})
   const [pdfContext, setPdfContext] = useState(null)
   const [pdfCanvas, setPdfCanvas] = useState(null)
   const [pdfCanvasImages,setPdfCanvasImages] = useState({})
   const [canvasBounds,setCanvasBounds] = useState(null)
   const [canvasOffset, setCanvasOffset] = useState({x:0,y:0})
   const [attachedMouseEvent,setAttachedMouseEvent] = useState(false)
+  const [canvasDims,setCanvasDims] = useState([0,0])
 
   let startPosition = {x:0,y:0}
   let holdState = false
@@ -35,7 +38,6 @@ const EditPDF = (props) => {
 
   useEffect(()=>{
     if(pdfCanvas != null){
-      console.log("CALLED!")
       if(!attachedMouseEvent && canvasBounds != null){
         attachMouseListeners()
         setAttachedMouseEvent(true)
@@ -45,16 +47,14 @@ const EditPDF = (props) => {
   },[textObjects,canvasBounds])
 
   useEffect(()=>{
-    if(pdfCanvas != null){
-      console.log("ATTACHED PDF CANVAS")
+    if(pdfCanvas != null){  
       let bounds = pdfCanvas.getBoundingClientRect()
       let offset = {x:bounds.left,y:bounds.top}
-      
+
       setCanvasBounds(bounds)
       setCanvasOffset(offset)   
     }
   },[pdfCanvas])
-
 
   const onDocumentLoadSuccess=({ numPages })=>{
     setNumPages(numPages);
@@ -72,23 +72,30 @@ const EditPDF = (props) => {
     setPdfCanvas(canvas)
   }
 
+  const onPageLoadSuccess=({width,height})=>{
+    setCanvasDims([width,height])
+  }
+
   const nextPage=()=>{
     if(pageNumber+1 <= numPages)
       setPageNumber(pageNumber+1)
+      setAttachedMouseEvent(false)
   }
   
   const prevPage=()=>{
     if(pageNumber-1 > 0)
       setPageNumber(pageNumber-1)
+      setAttachedMouseEvent(false)
   } 
 
   const checkClickIntersection=(position)=>{
-    let objects = null
+    let objects
     setTextObjects(textObjects=>{
-      objects = textObjects
+      objects = {...textObjects}
       return textObjects
     })
-    
+
+    objects = objects[pageNumber]
     let hit = false
     for(let iter in objects){
       let text = objects[iter]
@@ -149,31 +156,36 @@ const EditPDF = (props) => {
   }
 
   const moveTextObject=(movePosition)=>{
-    let objects = null
+    let objects
     setTextObjects(textObjects=>{
-      objects = textObjects
+      objects = {...textObjects}
       return textObjects
     })
 
-    objects[currentHoldIter].x = movePosition.x
-    objects[currentHoldIter].y = movePosition.y
+    let newObjects = objects[pageNumber]
+    newObjects[currentHoldIter].x = movePosition.x
+    newObjects[currentHoldIter].y = movePosition.y
    
-    setTextObjects([...objects])
+    setTextObjects({...objects,[pageNumber]:newObjects})
   }
 
   const createTextObject=(pos)=>{
     let value = "sheen"
     let width = pdfContext.measureText(value).width
     let height = 16  
-    let objects = []
+    let objects
 
     setTextObjects(textObjects=>{
-      objects = textObjects
+      objects = {...textObjects}
       return textObjects
     })
 
-    let text = new TextObject(value,pos.x,pos.y,width,height)
-    setTextObjects(objects=>([...objects,text]))
+    let oldObjects = objects[pageNumber]
+    if(oldObjects == null){
+      oldObjects = []
+    }
+    let text = new TextObject(value,pos.x,pos.y,width,height,height)
+    setTextObjects(objects=>({...objects,[pageNumber]:[...oldObjects,text]}))    
   }
 
   const displayTextObjects=()=>{
@@ -181,23 +193,42 @@ const EditPDF = (props) => {
     pdfContext.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height)
     pdfContext.putImageData(defaultCanvas,0,0)
 
-    for(let iter in textObjects){
-      let textObject = textObjects[iter]
+    for(let iter in textObjects[pageNumber]){
+      let textObject = textObjects[pageNumber][iter]
       pdfContext.fillText(textObject.value,textObject.x,textObject.y)
     }
+  }
+
+  const savePdf=()=>{
+    console.log("SAVE CALLED")
+    let positionDicts = {}
+    for(let pageIter in textObjects){
+      let pageObjects = []
+      for(let objectIter in textObjects[pageIter]){
+        let object = textObjects[pageIter][objectIter]
+        pageObjects.push({"position":[object.x,object.y],"value":object.value,
+                          "fontSize":object.fontSize})
+      }
+      positionDicts[pageIter] = pageObjects
+    }
+    console.log("POSITION DICTS IS",positionDicts)
+    preprocessPdf(props.pdfFile,positionDicts)
+
   }
 
   return (
     <div >
         <Navbar fillerCount={props.fillerCount}/>
         <Document
-          file={props.pdfFile}
+          file={props.pdfFileUrl}
           onLoadSuccess={onDocumentLoadSuccess}>
             <Page pageNumber={pageNumber}
               onRenderSuccess={onPageRenderSuccess}
-            />
+              onLoadSuccess={onPageLoadSuccess}
+              width={canvasDims[0]} />
+              
         </Document>
-        <p>Page {pageNumber} of {numPages}</p>
+        <p onClick={savePdf}>Page {pageNumber} of {numPages}</p>
         <button onClick={nextPage}>Next</button>
         <button onClick={prevPage}>Previous</button>
     </div>
