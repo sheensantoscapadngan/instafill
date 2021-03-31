@@ -35,26 +35,33 @@ const EditPDF = (props) => {
   let holdState = false
   let currentHoldIter = null
 
+  useEffect(()=>{
+    if(!attachedMouseEvent && pdfCanvas != null){
+      attachMouseListeners()
+      setAttachedMouseEvent(true)
+    }
+  },[canvasBounds])
 
   useEffect(()=>{
-    if(pdfCanvas != null){
-      if(!attachedMouseEvent && canvasBounds != null){
-        attachMouseListeners()
-        setAttachedMouseEvent(true)
-      }
+    if(pdfCanvas != null && canvasBounds != null){
       displayTextObjects()
     }
-  },[textObjects,canvasBounds])
+  },[textObjects,pdfCanvasImages,canvasBounds])
 
   useEffect(()=>{
     if(pdfCanvas != null){  
+      let canvasImg = pdfCanvasImages[pageNumber]
+      if(canvasImg == null) return
+      pdfCanvas.width = canvasDims[0]
+      pdfCanvas.height = canvasDims[1]
+      
       let bounds = pdfCanvas.getBoundingClientRect()
       let offset = {x:bounds.left,y:bounds.top}
 
-      setCanvasBounds(bounds)
-      setCanvasOffset(offset)   
+      setCanvasOffset(offset) 
+      setCanvasBounds(bounds)  
     }
-  },[pdfCanvas])
+  },[pdfCanvas,canvasDims])
 
   const onDocumentLoadSuccess=({ numPages })=>{
     setNumPages(numPages);
@@ -63,17 +70,24 @@ const EditPDF = (props) => {
   const onPageRenderSuccess=()=>{
     let canvas = document.querySelector('.react-pdf__Page__canvas');
     let context = canvas.getContext("2d")
-    let pageImg = context.getImageData(0, 0, canvas.width, canvas.height)
-
+  
     context.font = "16px verdana"
+ 
+    let oldCanvas = canvas.toDataURL("image/png");
+    let img = new Image();
+    img.src = oldCanvas;
+    img.onload = function (){
+        setPdfCanvasImages({...pdfCanvasImages,[pageNumber]:img})
+        setPdfContext(context)
+        setPdfCanvas(canvas)
+    }
 
-    setPdfCanvasImages({...pdfCanvasImages,[pageNumber]:pageImg})
-    setPdfContext(context)
-    setPdfCanvas(canvas)
   }
 
   const onPageLoadSuccess=({width,height})=>{
-    setCanvasDims([width,height])
+    if(canvasDims[0] != width && canvasDims[1] != height)
+      setCanvasDims([width,height])
+
   }
 
   const nextPage=()=>{
@@ -148,7 +162,7 @@ const EditPDF = (props) => {
   }
 
   const attachMouseListeners=()=>{
-  
+
     pdfCanvas.addEventListener('mousedown',handleMouseDown,true)
     pdfCanvas.addEventListener('mousemove',handleMouseMove,true)
     pdfCanvas.addEventListener('mouseup',handleMouseUp,true)
@@ -189,9 +203,11 @@ const EditPDF = (props) => {
   }
 
   const displayTextObjects=()=>{
-    let defaultCanvas = pdfCanvasImages[pageNumber]
+    let canvasImg = pdfCanvasImages[pageNumber]
+  
+    if(canvasImg == null) return
     pdfContext.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height)
-    pdfContext.putImageData(defaultCanvas,0,0)
+    pdfContext.drawImage(canvasImg,0,0,pdfCanvas.width,pdfCanvas.height)
 
     for(let iter in textObjects[pageNumber]){
       let textObject = textObjects[pageNumber][iter]
@@ -200,7 +216,6 @@ const EditPDF = (props) => {
   }
 
   const savePdf=()=>{
-    console.log("SAVE CALLED")
     let positionDicts = {}
     for(let pageIter in textObjects){
       let pageObjects = []
@@ -211,9 +226,7 @@ const EditPDF = (props) => {
       }
       positionDicts[pageIter] = pageObjects
     }
-    console.log("POSITION DICTS IS",positionDicts)
     preprocessPdf(props.pdfFile,positionDicts)
-
   }
 
   return (
@@ -224,8 +237,7 @@ const EditPDF = (props) => {
           onLoadSuccess={onDocumentLoadSuccess}>
             <Page pageNumber={pageNumber}
               onRenderSuccess={onPageRenderSuccess}
-              onLoadSuccess={onPageLoadSuccess}
-              width={canvasDims[0]} />
+              onLoadSuccess={onPageLoadSuccess} />
               
         </Document>
         <p onClick={savePdf}>Page {pageNumber} of {numPages}</p>
