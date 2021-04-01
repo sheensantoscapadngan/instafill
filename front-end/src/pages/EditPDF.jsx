@@ -27,8 +27,8 @@ const EditPDF = (props) => {
   const [pdfCanvas, setPdfCanvas] = useState(null)
   const [pdfCanvasImages,setPdfCanvasImages] = useState({})
   const [canvasBounds,setCanvasBounds] = useState(null)
-  const [canvasOffset, setCanvasOffset] = useState({x:0,y:0})
-  const [attachedMouseEvent,setAttachedMouseEvent] = useState(false)
+  const [canvasOffset, setCanvasOffset] = useState(null)
+
   const [pdfDims,setPdfDims] = useState([0,0])
   const [selectedItem, setSelectedItem] = useState(null)
   const [addTextPosition, setAddTextPosition] = useState(null)
@@ -42,28 +42,32 @@ const EditPDF = (props) => {
   let currentHoldIter = null
 
   useEffect(()=>{
-    if(!attachedMouseEvent && pdfCanvas != null){
+    if(pdfCanvas != null){
+      console.log("CANVAS BOUNDS IS",canvasBounds)
       attachMouseListeners()
-      setAttachedMouseEvent(true)
     }
   },[canvasBounds])
+
 
   useEffect(()=>{
     if(pdfCanvas != null && canvasBounds != null){
       displayTextObjects()
     }
-  },[textObjects,pdfCanvasImages,canvasBounds])
+  },[textObjects,pdfCanvasImages,pdfCanvas])
 
   useEffect(()=>{
     if(pdfCanvas != null){  
       let canvasImg = pdfCanvasImages[pageNumber]
       if(canvasImg == null) return
-    
-      let bounds = pdfCanvas.getBoundingClientRect()
-      let offset = {x:bounds.left,y:bounds.top}
 
-      setCanvasOffset(offset) 
-      setCanvasBounds(bounds)  
+      if(canvasOffset == null){
+        let bounds = pdfCanvas.getBoundingClientRect()
+        let offset = {x:bounds.left,y:bounds.top}
+        setCanvasOffset(offset) 
+        setCanvasBounds(bounds)  
+      }else{
+        attachMouseListeners()
+      }
     }
   },[pdfCanvas,pdfDims])
 
@@ -93,9 +97,11 @@ const EditPDF = (props) => {
   } 
 
   const onPageRenderSuccess=()=>{
+
     let canvas = document.querySelector('.react-pdf__Page__canvas');
     let context = canvas.getContext("2d")
   
+    console.log("PAGE RENDERED!")
     context.font = "16px verdana"
  
     let oldCanvas = canvas.toDataURL("image/png");
@@ -105,6 +111,7 @@ const EditPDF = (props) => {
         setPdfCanvasImages({...pdfCanvasImages,[pageNumber]:img})
         setPdfContext(context)
         setPdfCanvas(canvas)
+        
     }
 
   }
@@ -116,13 +123,19 @@ const EditPDF = (props) => {
   const nextPage=()=>{
     if(pageNumber+1 <= numPages)
       setPageNumber(pageNumber+1)
-      setAttachedMouseEvent(false)
+      setSelectedItem(null)
+      setEditItem(null)
+      setAddTextPosition(null)
+    
   }
   
   const prevPage=()=>{
     if(pageNumber-1 > 0)
       setPageNumber(pageNumber-1)
-      setAttachedMouseEvent(false)
+      setSelectedItem(null)
+      setEditItem(null)
+      setAddTextPosition(null)
+    
   } 
 
   const checkClickIntersection=(position)=>{
