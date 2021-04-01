@@ -31,8 +31,8 @@ const EditPDF = (props) => {
   const [attachedMouseEvent,setAttachedMouseEvent] = useState(false)
   const [pdfDims,setPdfDims] = useState([0,0])
   const [selectedItem, setSelectedItem] = useState(null)
-
-  console.log("SELECTED ITEM IS",selectedItem)
+  const [addTextPosition, setAddTextPosition] = useState(null)
+  const addTextRef = useRef(null)
 
   let startPosition = {x:0,y:0}
   let holdState = false
@@ -102,6 +102,7 @@ const EditPDF = (props) => {
   } 
 
   const checkClickIntersection=(position)=>{
+
     let objects
     setTextObjects(textObjects=>{
       objects = {...textObjects}
@@ -122,7 +123,7 @@ const EditPDF = (props) => {
       }
     }
     if(!hit){
-      createTextObject(position)
+      setAddTextPosition(position)
     }
   }
 
@@ -183,23 +184,22 @@ const EditPDF = (props) => {
     setTextObjects({...objects,[pageNumber]:newObjects})
   }
 
-  const createTextObject=(pos)=>{
-    let value = "sheen"
+  const createTextObject=(pos,textValue)=>{
+    let value = textValue
     let width = pdfContext.measureText(value).width
     let height = 16  
     let objects
 
     setTextObjects(textObjects=>{
       objects = {...textObjects}
-      return textObjects
+      let oldObjects = objects[pageNumber]
+      if(oldObjects == null){
+        oldObjects = []
+      }
+      let text = new TextObject(value,pos.x,pos.y,width,height,height)
+      return {...textObjects,[pageNumber]:[...oldObjects,text]}
     })
 
-    let oldObjects = objects[pageNumber]
-    if(oldObjects == null){
-      oldObjects = []
-    }
-    let text = new TextObject(value,pos.x,pos.y,width,height,height)
-    setTextObjects(objects=>({...objects,[pageNumber]:[...oldObjects,text]}))    
   }
 
   const displayTextObjects=()=>{
@@ -259,7 +259,30 @@ const EditPDF = (props) => {
     return popup
   }
 
+  const addTextTrigger=(e)=>{
+    if(e.key == 'Enter'){
+      createTextObject(addTextPosition,addTextRef.current.value)
+      setAddTextPosition(null)
+    }
+  }
+
+  const setupAddTextPopup=()=>{
+    let popup = null
+    if(addTextPosition != null){
+      let positionX = addTextPosition.x
+      let positionY = addTextPosition.y
+      let popupStyle = {
+        position:'absolute',
+        left: positionX,
+        top: positionY
+      }
+      popup = <input ref={addTextRef} type="text" placeholder="Enter Text" style={popupStyle} onKeyDown={addTextTrigger}></input>
+    }
+    return popup
+  }
+
   let popupBox = setupSelectedPopup()
+  let popupAddText = setupAddTextPopup()
 
   return (
     <div >
@@ -275,6 +298,7 @@ const EditPDF = (props) => {
         <button onClick={nextPage}>Next</button>
         <button onClick={prevPage}>Previous</button>
         {popupBox}
+        {popupAddText}
     </div>
   );
 }
