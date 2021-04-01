@@ -1,4 +1,4 @@
-import {Navbar} from '../components/common';
+import {Button, Navbar} from '../components/common';
 import React, { useState,useEffect,useRef} from 'react';
 import {preprocessPdf} from '../pdflib/processPdf.js'
 
@@ -30,6 +30,9 @@ const EditPDF = (props) => {
   const [canvasOffset, setCanvasOffset] = useState({x:0,y:0})
   const [attachedMouseEvent,setAttachedMouseEvent] = useState(false)
   const [pdfDims,setPdfDims] = useState([0,0])
+  const [selectedItem, setSelectedItem] = useState(null)
+
+  console.log("SELECTED ITEM IS",selectedItem)
 
   let startPosition = {x:0,y:0}
   let holdState = false
@@ -114,6 +117,7 @@ const EditPDF = (props) => {
       if(hit){
         holdState = true
         currentHoldIter = iter
+        setSelectedItem(iter)
         break
       }
     }
@@ -175,7 +179,7 @@ const EditPDF = (props) => {
     let newObjects = objects[pageNumber]
     newObjects[currentHoldIter].x = movePosition.x
     newObjects[currentHoldIter].y = movePosition.y
-   
+  
     setTextObjects({...objects,[pageNumber]:newObjects})
   }
 
@@ -227,6 +231,36 @@ const EditPDF = (props) => {
     preprocessPdf(props.pdfFile,positionDicts)
   }
 
+  const onClickSelectedDelete=()=>{
+      let pageObjects = {...textObjects}
+      let objects = [...pageObjects[pageNumber]]
+      objects.splice(selectedItem,1)
+      setSelectedItem(null)
+      setTextObjects({...pageObjects,[pageNumber]:objects})
+  }
+
+  const setupSelectedPopup=()=>{
+    let popup = null
+    if(selectedItem != null){
+
+      let selectedItemPosX = textObjects[pageNumber][selectedItem].x
+      let selectedItemPosY = textObjects[pageNumber][selectedItem].y
+  
+      let popupBoxStyle = {
+        position:'absolute',
+        left:canvasOffset.x+selectedItemPosX+'px',
+        top:canvasOffset.y+selectedItemPosY+'px'
+      }
+      popup = <div style={popupBoxStyle}>
+                    <button>Edit</button>
+                    <button onClick={onClickSelectedDelete}>Delete</button>
+                </div>
+    }
+    return popup
+  }
+
+  let popupBox = setupSelectedPopup()
+
   return (
     <div >
         <Navbar fillerCount={props.fillerCount}/>
@@ -236,14 +270,13 @@ const EditPDF = (props) => {
             <Page pageNumber={pageNumber}
               onRenderSuccess={onPageRenderSuccess}
               onLoadSuccess={onPageLoadSuccess} />
-              
         </Document>
         <p onClick={savePdf}>Page {pageNumber} of {numPages}</p>
         <button onClick={nextPage}>Next</button>
         <button onClick={prevPage}>Previous</button>
-        
+        {popupBox}
     </div>
   );
 }
 
-export default EditPDF;
+export default EditPDF; 
