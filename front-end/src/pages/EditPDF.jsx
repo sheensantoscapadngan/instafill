@@ -32,7 +32,10 @@ const EditPDF = (props) => {
   const [pdfDims,setPdfDims] = useState([0,0])
   const [selectedItem, setSelectedItem] = useState(null)
   const [addTextPosition, setAddTextPosition] = useState(null)
+  const [editItem, setEditItem] = useState(null)
+
   const addTextRef = useRef(null)
+  const editTextRef = useRef(null)
 
   let startPosition = {x:0,y:0}
   let holdState = false
@@ -63,6 +66,27 @@ const EditPDF = (props) => {
       setCanvasBounds(bounds)  
     }
   },[pdfCanvas,pdfDims])
+
+  useEffect(()=>{
+    if(selectedItem != null){
+      setAddTextPosition(null)
+      setEditItem(null)
+    }
+  },[selectedItem])
+
+  useEffect(()=>{
+    if(editItem != null){
+      setSelectedItem(null)
+      setAddTextPosition(null)
+    }
+  },[editItem])
+
+  useEffect(()=>{
+    if(addTextPosition != null){
+      setEditItem(null)
+      setSelectedItem(null)
+    }
+  },[addTextPosition])
 
   const onDocumentLoadSuccess=({ numPages })=>{
     setNumPages(numPages);
@@ -231,12 +255,37 @@ const EditPDF = (props) => {
     preprocessPdf(props.pdfFile,positionDicts)
   }
 
+  const editTextObject=(item,newValue)=>{
+    let pageObjects = {...textObjects}
+    let objects = [...pageObjects[pageNumber]]
+    objects[item].value = newValue
+    setTextObjects({...pageObjects,[pageNumber]:objects})
+  }
+
   const onClickSelectedDelete=()=>{
-      let pageObjects = {...textObjects}
-      let objects = [...pageObjects[pageNumber]]
-      objects.splice(selectedItem,1)
-      setSelectedItem(null)
-      setTextObjects({...pageObjects,[pageNumber]:objects})
+    let pageObjects = {...textObjects}
+    let objects = [...pageObjects[pageNumber]]
+    objects.splice(selectedItem,1)
+    setSelectedItem(null)
+    setTextObjects({...pageObjects,[pageNumber]:objects}) 
+  }
+
+  const onClickEdit=()=>{
+    setEditItem(selectedItem)
+  }
+
+  const addTextTrigger=(e)=>{
+    if(e.key == 'Enter'){
+      createTextObject(addTextPosition,addTextRef.current.value)
+      setAddTextPosition(null)
+    }
+  }
+
+  const editTextTrigger=(e)=>{
+    if(e.key == 'Enter'){
+      editTextObject(editItem,editTextRef.current.value)
+      setEditItem(null)
+    }
   }
 
   const setupSelectedPopup=()=>{
@@ -252,18 +301,11 @@ const EditPDF = (props) => {
         top:canvasOffset.y+selectedItemPosY+'px'
       }
       popup = <div style={popupBoxStyle}>
-                    <button>Edit</button>
+                    <button onClick={onClickEdit}>Edit</button>
                     <button onClick={onClickSelectedDelete}>Delete</button>
                 </div>
     }
     return popup
-  }
-
-  const addTextTrigger=(e)=>{
-    if(e.key == 'Enter'){
-      createTextObject(addTextPosition,addTextRef.current.value)
-      setAddTextPosition(null)
-    }
   }
 
   const setupAddTextPopup=()=>{
@@ -281,8 +323,28 @@ const EditPDF = (props) => {
     return popup
   }
 
+  const setupEditTextPopup=()=>{
+    let popup = null
+    if(editItem != null){
+      let positionX = textObjects[pageNumber][editItem].x
+      let positionY = textObjects[pageNumber][editItem].y
+      let oldValue = textObjects[pageNumber][editItem].value
+  
+      let popupStyle = {
+        position:'absolute',
+        left:canvasOffset.x+positionX+'px',
+        top:canvasOffset.y+positionY+'px'
+      }
+      popup = <input ref={editTextRef} type="text" placeholder="Enter Text"
+                  style={popupStyle} onKeyDown={editTextTrigger} defaultValue={oldValue}></input>
+
+    }
+    return popup
+  }
+
   let popupBox = setupSelectedPopup()
   let popupAddText = setupAddTextPopup()
+  let popupEdit = setupEditTextPopup()
 
   return (
     <div >
@@ -299,6 +361,7 @@ const EditPDF = (props) => {
         <button onClick={prevPage}>Previous</button>
         {popupBox}
         {popupAddText}
+        {popupEdit}
     </div>
   );
 }
