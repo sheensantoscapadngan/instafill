@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-import {Navbar} from '../components/common';
-import React, { useState } from 'react';
-=======
 import {Button, Navbar} from '../components/common';
 import React, { useState,useEffect,useRef} from 'react';
 import {preprocessPdf} from '../pdflib/processPdf.js'
 
->>>>>>> 637c23cc7c1e03ff70cb0731fdd78d0de0a25198
 import './EditPDF.css';
 import { Document, Page, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -26,9 +21,6 @@ const EditPDF = (props) => {
 
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-<<<<<<< HEAD
-  const [file, setFile] = useState([]);
-=======
   const [textObjects, setTextObjects] = useState({})
   const [pdfContext, setPdfContext] = useState(null)
   const [pdfCanvas, setPdfCanvas] = useState(null)
@@ -76,7 +68,6 @@ const EditPDF = (props) => {
       }
     }
   },[pdfCanvas,pdfDims])
->>>>>>> 637c23cc7c1e03ff70cb0731fdd78d0de0a25198
 
   useEffect(()=>{
     if(pdfContext != null && canvasBounds != null){
@@ -135,6 +126,7 @@ const EditPDF = (props) => {
       return
     }
 
+    if(props.apiResult == null) return
     let instafilled = props.apiResult['instafilled']
     let pageFilled = instafilled[pageNumber]
 
@@ -440,19 +432,6 @@ const EditPDF = (props) => {
 
   return (
     <div >
-<<<<<<< HEAD
-
-        <Navbar/>
-      <Document
-        file="sample.pdf"
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
-         <Page pageNumber={pageNumber} />
-      </Document>
- 
-      <p>Page {pageNumber} of {numPages}</p>
-
-=======
         <Navbar fillerCount={props.fillerCount}/>
         <Document
           file={props.pdfFileUrl}
@@ -468,7 +447,6 @@ const EditPDF = (props) => {
         {popupBox}
         {popupAddText}
         {popupEdit}
->>>>>>> 637c23cc7c1e03ff70cb0731fdd78d0de0a25198
     </div>
   );
 }

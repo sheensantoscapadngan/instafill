@@ -78,7 +78,7 @@ const MainPage = (props) =>{
     props.setPdfFileUrl(pdfUrl)
 
     clearState();
-    axios({
+    /*axios({
       url: '/process',
       method: "POST",
       headers:{
@@ -86,11 +86,11 @@ const MainPage = (props) =>{
       },
       data: formData
     }).then((res)=>{ 
-      /*
+     
       props.setApiResult(res.data)
       routeToEditPdf()
-      */
-    })
+      
+    })*/
     routeToEditPdf()
   }
     return(
