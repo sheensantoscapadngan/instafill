@@ -19,6 +19,9 @@ function App(){
 
   let user = useContext(UserContext)
   const [fillerCount,setFillerCount] = useState(0)
+  const [pdfFileUrl,setPdfFileUrl] = useState(10)
+  const [pdfFile,setPdfFile] = useState(10)
+  const [apiResult, setApiResult] = useState(null)
 
   if(user != null){
     attachFillerListener(user.email,setFillerCount)
@@ -44,13 +47,13 @@ function App(){
           <AnimatePresence exitBeforeEnter>
           <Switch>
           <Route exact path='/'>
-            <MainPage fillerCount={fillerCount}/>
+            <MainPage fillerCount={fillerCount} setPdfFileUrl={setPdfFileUrl} setPdfFile={setPdfFile} setApiResult={setApiResult}/>
           </Route>
           <Route exact path='/createMaster' >
             <CreateMaster fillerCount={fillerCount}/>
           </Route>
           <Route exact path='/editPDF'>
-            <EditPDF/>
+            <EditPDF fillerCount={fillerCount} pdfFileUrl={pdfFileUrl} pdfFile={pdfFile} apiResult={apiResult}/>  
           </Route>
           </Switch>
           </AnimatePresence>

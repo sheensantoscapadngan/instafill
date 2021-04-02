@@ -1,4 +1,5 @@
-import React, {useState,useContext} from 'react';
+import React, {useState,useContext,useEffect} from 'react';
+import {useHistory} from 'react-router-dom'
 import './MainPage.css';
 import './tooltip.css';
 import {Button, Popup, DropzoneMASTER, DropzonePDF, Navbar} from '../components/common';
@@ -29,6 +30,8 @@ function ThirdButton(){
 };
 const MainPage = (props) =>{
 
+  const history = useHistory()
+
   const  pageVariants = {
     in: {
       opacity: 1,
@@ -45,17 +48,24 @@ const MainPage = (props) =>{
     type: "spring"
 
   }
-
+  
   const [buttonPopupPDF, setButtonPopupPDF] = useState(false);
   const [buttonPopupMASTER, setButtonPopupMASTER] = useState(false);
 
   const [fileUploadPDF, setFileUploadPDF] = useState([])
   const [fileUploadMASTER, setFileUploadMASTER] = useState([])
-  console.log(fileUploadPDF.length)
 
   const clearState = () =>{
     setFileUploadPDF([]);
     setFileUploadMASTER([]);
+  }
+
+  const routeToEditPdf =()=>{
+    history.push('editPDF')
+  }
+
+  const getPdfUrl=(file)=>{
+      return URL.createObjectURL(file)
   }
 
   if(fileUploadMASTER.length == 1 && fileUploadPDF.length == 1){
@@ -63,6 +73,9 @@ const MainPage = (props) =>{
     formData.append('master',fileUploadMASTER[0])
     formData.append('pdf', fileUploadPDF[0])
     
+    let pdfUrl = getPdfUrl(fileUploadPDF[0])
+    props.setPdfFile(fileUploadPDF[0])
+    props.setPdfFileUrl(pdfUrl)
 
     clearState();
     axios({
@@ -73,20 +86,18 @@ const MainPage = (props) =>{
       },
       data: formData
     }).then((res)=>{ 
-      
+      /*
+      props.setApiResult(res.data)
+      routeToEditPdf()
+      */
     })
-    window.location = "/editPDF";
-
-    
+    routeToEditPdf()
   }
     return(
       <div className="MainPage" >
         <Navbar fillerCount={props.fillerCount}/>
         <motion.div initial="out" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
           
-
-          
-        
           <div className="buttons">
             <view 
               className = "stylish"
@@ -145,15 +156,11 @@ const MainPage = (props) =>{
             <DropzoneMASTER setFileUploadMASTER={setFileUploadMASTER}></DropzoneMASTER>
               
             </div>
-
           </Popup>
-            <div className="dont-display">
-              <EditPDF fileUploadPDF={fileUploadPDF}> </EditPDF>
-            </div>
+       
           
         </div>
     )
-
 
 }
 

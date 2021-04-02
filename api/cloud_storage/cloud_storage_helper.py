@@ -11,7 +11,6 @@ def upload_pdf_to_storage(source_file_name):
     file_path = "gs://instafill/" + blob_name
     return file_path, blob_name
 
-
 def delete_pdf_from_storage(blob_name):
     blob = bucket.blob(blob_name)
     blob.delete()

@@ -17,7 +17,7 @@ class CreateMaster extends Component{
             data : {},
             newLabel : "",
             newRows : [],
-            fillerCount: props.fillerCount
+            fillerCount: props.fillerCount,
         }
     }
 

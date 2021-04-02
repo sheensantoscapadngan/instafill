@@ -8,31 +8,32 @@ function downloadPdf(bytes){
   link.click();
 }
 
-async function modifyPdf(bytes,position_dicts) {
+const convertCoordinates=(position,pageDims)=>{
+  position[1] = pageDims[1] - position[1]
+  return position
+}
 
-  position_dicts = {
-      0:[{"position":(10,10),"value":"carabao"}]
-  }
+async function modifyPdf(bytes,positionDicts) {
 
   const existingPdfBytes = bytes
-
   const pdfDoc = await PDFDocument.load(existingPdfBytes)
-
   const pages = pdfDoc.getPages()
-  const { width, height } = pages[0]
-  console.log("WIDTH AND HEIGHT:",width,",",height)
+  const { width, height } = pages[0].getSize()  
 
-  for(let page_number in position_dicts){
-    let fill_objects = position_dicts[page_number]
-    for(let object_number in fill_objects){
-      let fill_object = fill_objects[object_number]
-      let page = pages[page_number]
-      let value = fill_object["value"]
-      let position = fill_object["position"]
+  for(let pageNumber in positionDicts){
+    let fillObjects = positionDicts[pageNumber]
+    for(let objectNumber in fillObjects){
+      let fillObject = fillObjects[objectNumber]
+      let page = pages[pageNumber-1]
+      let value = fillObject["value"]
+      let position = fillObject["position"]
+      let fontSize = fillObject["fontSize"]
+
+      position = convertCoordinates(position,[width,height])
       page.drawText(value,{
         x:position[0],
         y:position[1],
-        size:20
+        size:fontSize-4
       })
     }
   
@@ -42,12 +43,12 @@ async function modifyPdf(bytes,position_dicts) {
   downloadPdf(pdfBytes)
 }
  
-export function preprocessPdf(file,position_dicts){
+export function preprocessPdf(file,positionDicts){
   let reader = new FileReader()
   reader.readAsArrayBuffer(file)
 
   reader.onload = ()=>{
-    modifyPdf(reader.result)
+    modifyPdf(reader.result,positionDicts)
   }
 } 
   

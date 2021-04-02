@@ -9,7 +9,6 @@ app = Flask(__name__)
 app.model = SentenceTransformer(
     r'E:\PROJECTS\instafill_backend\api\instafill_text\model\field_model1')
 
-
 @app.route('/')
 def main():
     return "FAK U SHEEN"

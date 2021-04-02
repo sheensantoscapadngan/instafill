@@ -15,7 +15,7 @@ def convert_pdf_to_img(file):
     pages_img = []
     doc = fitz.open(stream=file, filetype="pdf")
     for i in range(len(doc)):
-        pix = doc.getPagePixmap(0,alpha=False)
+        pix = doc.getPagePixmap(i,alpha=False)
         img = pix2np(pix)
         img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         pages_img.append(img)
