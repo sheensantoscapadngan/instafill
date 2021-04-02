@@ -20,13 +20,15 @@ def process_request(pages_img, master_document, model):
 
         fillable_positions = extract_fillable_positions(
             pages_data, used_lines_dict)
-
+        
+        '''
         show_instafill_result(
             instafill_dict, pages_img)
 
         show_fillable_positions(
             fillable_positions, pages_img)
-
+        '''
+        
         return instafill_dict, fillable_positions
 
     except Exception as e:

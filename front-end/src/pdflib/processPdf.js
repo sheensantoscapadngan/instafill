@@ -20,8 +20,6 @@ async function modifyPdf(bytes,positionDicts) {
   const pages = pdfDoc.getPages()
   const { width, height } = pages[0].getSize()  
 
-  console.log("WIDTH AND HEIGHT AT PROCESS IS",width,height)
-
   for(let pageNumber in positionDicts){
     let fillObjects = positionDicts[pageNumber]
     for(let objectNumber in fillObjects){
@@ -35,7 +33,7 @@ async function modifyPdf(bytes,positionDicts) {
       page.drawText(value,{
         x:position[0],
         y:position[1],
-        size:fontSize-3
+        size:fontSize-4
       })
     }
   

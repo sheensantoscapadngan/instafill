@@ -77,7 +77,6 @@ const MainPage = (props) =>{
     props.setPdfFile(fileUploadPDF[0])
     props.setPdfFileUrl(pdfUrl)
 
-    /*
     clearState();
     axios({
       url: '/process',
@@ -87,11 +86,10 @@ const MainPage = (props) =>{
       },
       data: formData
     }).then((res)=>{ 
-  
+      props.setApiResult(res.data)
+      routeToEditPdf()
     })
-    */
-  
-    routeToEditPdf()
+    //routeToEditPdf()
   }
     return(
       <div className="MainPage" >
