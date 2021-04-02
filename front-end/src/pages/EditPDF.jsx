@@ -33,6 +33,7 @@ const EditPDF = (props) => {
   const [selectedItem, setSelectedItem] = useState(null)
   const [addTextPosition, setAddTextPosition] = useState(null)
   const [editItem, setEditItem] = useState(null)
+  const [addedApiResult, setAddedApiResult] = useState([])
 
   const addTextRef = useRef(null)
   const editTextRef = useRef(null)
@@ -43,11 +44,9 @@ const EditPDF = (props) => {
 
   useEffect(()=>{
     if(pdfCanvas != null){
-      console.log("CANVAS BOUNDS IS",canvasBounds)
       attachMouseListeners()
     }
   },[canvasBounds])
-
 
   useEffect(()=>{
     if(pdfCanvas != null && canvasBounds != null){
@@ -122,29 +121,42 @@ const EditPDF = (props) => {
   }
 
   const addApiResultToTextObjects=()=>{
+    
+    if(addedApiResult.includes(pageNumber)){
+      //results already added to page
+      return
+    }
+
     let instafilled = props.apiResult['instafilled']
     let pageFilled = instafilled[pageNumber]
 
-    console.log("INSTAFILLED IS",instafilled)
-    console.log("PAGE FILLED IS",pageFilled)
-
     for(let key in pageFilled){
       let resultObj = pageFilled[key]
-      console.log("RESULT OBJ IS",resultObj,"WITH KEY",key)
-
       let resultValue = resultObj.value
       let resultCoord = resultObj.position[0]
       let normalized = normalizePosition(resultCoord[0],resultCoord[1])
       let resultPosition = {x:normalized[0],y:normalized[1]}
       if(resultValue != ""){
-        console.log("RESULT DATA ARE:",resultPosition,resultValue)
         createTextObject(resultPosition,resultValue)
       }
-
     }
+
+    setAddedApiResult([...addedApiResult,pageNumber])
+    
+  }
+
+  function removeTextLayerOffset() {
+    const textLayers = document.querySelectorAll(".react-pdf__Page__textContent");
+      textLayers.forEach(layer => {
+        const { style } = layer;
+        style.top = "-1000px";
+        style.left = "-1000px";
+        style.transform = "";
+    });
   }
 
   const onPageLoadSuccess=({width,height})=>{
+      removeTextLayerOffset()
       setPdfDims([width,height])
   }
 
@@ -256,7 +268,7 @@ const EditPDF = (props) => {
   const createTextObject=(pos,textValue)=>{
     let value = textValue
     let width = pdfContext.measureText(value).width
-    let height = 16  
+    let height = 16
     let objects
 
     setTextObjects(textObjects=>{
@@ -280,7 +292,14 @@ const EditPDF = (props) => {
 
     for(let iter in textObjects[pageNumber]){
       let textObject = textObjects[pageNumber][iter]
+      let fontSize = textObject.fontSize
+      let defaultFont = "16px verdana"
+      let font = fontSize+"px verdana"
+      pdfContext.font = font
+      //pdfContext.font = fontSize+"px" + "verdana"
       pdfContext.fillText(textObject.value,textObject.x,textObject.y)
+      pdfContext.font = defaultFont
+
     }
   }
   
@@ -313,6 +332,24 @@ const EditPDF = (props) => {
     objects.splice(selectedItem,1)
     setSelectedItem(null)
     setTextObjects({...pageObjects,[pageNumber]:objects}) 
+  }
+
+  const onClickSelectedIncreaseSize=()=>{
+    let pageObjects = {...textObjects}
+    let objects = [...pageObjects[pageNumber]]
+    let currentSize = objects[selectedItem].fontSize
+    objects[selectedItem].fontSize = currentSize+1
+    setTextObjects({...pageObjects,[pageNumber]:objects}) 
+  }
+
+  const onClickSeletedDecreaseSize=()=>{
+    let pageObjects = {...textObjects}
+    let objects = [...pageObjects[pageNumber]]
+    let currentSize = objects[selectedItem].fontSize
+    if(currentSize > 5){
+      objects[selectedItem].fontSize = currentSize-1
+      setTextObjects({...pageObjects,[pageNumber]:objects}) 
+    }
   }
 
   const onClickEdit=()=>{
@@ -348,6 +385,8 @@ const EditPDF = (props) => {
       popup = <div style={popupBoxStyle}>
                     <button onClick={onClickEdit}>Edit</button>
                     <button onClick={onClickSelectedDelete}>Delete</button>
+                    <button onClick={onClickSeletedDecreaseSize}>Decrease</button>
+                    <button onClick={onClickSelectedIncreaseSize}>Increase</button>
                 </div>
     }
     return popup
@@ -399,7 +438,7 @@ const EditPDF = (props) => {
           onLoadSuccess={onDocumentLoadSuccess}>
             <Page pageNumber={pageNumber}
               onRenderSuccess={onPageRenderSuccess}
-              onLoadSuccess={onPageLoadSuccess} />
+              onLoadSuccess={onPageLoadSuccess}/>
         </Document>
         <p onClick={savePdf}>Page {pageNumber} of {numPages}</p>
         <button onClick={nextPage}>Next</button>
