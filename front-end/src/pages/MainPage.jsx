@@ -86,10 +86,12 @@ const MainPage = (props) =>{
       },
       data: formData
     }).then((res)=>{ 
+      /*
       props.setApiResult(res.data)
       routeToEditPdf()
+      */
     })
-    //routeToEditPdf()
+    routeToEditPdf()
   }
     return(
       <div className="MainPage" >

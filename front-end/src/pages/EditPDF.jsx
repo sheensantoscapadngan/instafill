@@ -440,9 +440,10 @@ const EditPDF = (props) => {
               onRenderSuccess={onPageRenderSuccess}
               onLoadSuccess={onPageLoadSuccess}/>
         </Document>
-        <p onClick={savePdf}>Page {pageNumber} of {numPages}</p>
+        <p>Page {pageNumber} of {numPages}</p>
         <button onClick={nextPage}>Next</button>
         <button onClick={prevPage}>Previous</button>
+        <button onClick={savePdf}>Download</button>
         {popupBox}
         {popupAddText}
         {popupEdit}
