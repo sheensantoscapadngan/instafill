@@ -33,7 +33,7 @@ async function modifyPdf(bytes,positionDicts) {
       page.drawText(value,{
         x:position[0],
         y:position[1],
-        size:fontSize-4
+        size:fontSize-3
       })
     }
   
