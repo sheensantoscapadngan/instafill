@@ -405,21 +405,42 @@ const EditPDF = (props) => {
     }
 
   }
+
+  const normalizeForPdfSave=(pos)=>{
+    let normalizedPosition = [pos[0]/pdfCanvas.width,pos[1]/pdfCanvas.height]
+    let scaledPosition = [normalizedPosition[0]*pdfDims[0],normalizedPosition[1]*pdfDims[1]]
+    return scaledPosition
+  }
   
   const savePdf=()=>{
-    let positionDicts = {}
+
+    //save text
+    let textDicts = {}
     for(let pageIter in textObjects){
       let pageObjects = []
       for(let objectIter in textObjects[pageIter]){
         let object = textObjects[pageIter][objectIter]
-        let normalizedPosition = [object.x/pdfCanvas.width,object.y/pdfCanvas.height]
-        let scaledPosition = [normalizedPosition[0]*pdfDims[0],normalizedPosition[1]*pdfDims[1]]
+        let scaledPosition = normalizeForPdfSave([object.x,object.y])
         pageObjects.push({"position":scaledPosition,"value":object.value,
                           "fontSize":object.fontSize})
       }
-      positionDicts[pageIter] = pageObjects
+      textDicts[pageIter] = pageObjects
     }
-    preprocessPdf(props.pdfFile,positionDicts)
+
+    //save lines
+    let lineDicts = {}
+    for(let pageIter in lineObjects){
+      let pageObjects = []
+      for(let objectIter in lineObjects[pageIter]){
+        let object = lineObjects[pageIter][objectIter]
+        let scaledStartPosition = normalizeForPdfSave(object.start)
+        let scaledEndPosition = normalizeForPdfSave(object.end)
+        pageObjects.push({"start":scaledStartPosition,"end":scaledEndPosition})
+      }
+      lineDicts[pageIter] = pageObjects
+    }
+
+    preprocessPdf(props.pdfFile,textDicts,lineDicts)
   }
 
   const editTextObject=(item,newValue)=>{

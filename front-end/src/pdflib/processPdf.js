@@ -13,15 +13,16 @@ const convertCoordinates=(position,pageDims)=>{
   return position
 }
 
-async function modifyPdf(bytes,positionDicts) {
+async function modifyPdf(bytes,textDicts,lineDicts) {
 
   const existingPdfBytes = bytes
   const pdfDoc = await PDFDocument.load(existingPdfBytes)
   const pages = pdfDoc.getPages()
   const { width, height } = pages[0].getSize()  
 
-  for(let pageNumber in positionDicts){
-    let fillObjects = positionDicts[pageNumber]
+  //add texts 
+  for(let pageNumber in textDicts){
+    let fillObjects = textDicts[pageNumber]
     for(let objectNumber in fillObjects){
       let fillObject = fillObjects[objectNumber]
       let page = pages[pageNumber-1]
@@ -36,19 +37,41 @@ async function modifyPdf(bytes,positionDicts) {
         size:fontSize-3
       })
     }
+  }
   
+  //add lines
+  for(let pageNumber in lineDicts){
+    let fillObjects = lineDicts[pageNumber]
+    for(let objectNumber in fillObjects){
+      let fillObject = fillObjects[objectNumber]
+      let page = pages[pageNumber-1]
+
+      let start = fillObject['start']
+      let end = fillObject['end']
+      start = convertCoordinates(start,[width,height])
+      end = convertCoordinates(end,[width,height])
+        
+      page.drawLine({
+        start:{x:start[0],y:start[1]},
+        end:{x:end[0],y:end[1]},
+        thickness: 1.2,
+        color: rgb(0, 0, 0),
+        opacity:0.9
+      })
+
+    }
   }
 
   const pdfBytes = await pdfDoc.save()
   downloadPdf(pdfBytes)
 }
  
-export function preprocessPdf(file,positionDicts){
+export function preprocessPdf(file,textDicts,lineDicts){
   let reader = new FileReader()
   reader.readAsArrayBuffer(file)
 
   reader.onload = ()=>{
-    modifyPdf(reader.result,positionDicts)
+    modifyPdf(reader.result,textDicts,lineDicts)
   }
 } 
   
