@@ -17,7 +17,7 @@
   font-family: "Montserrat", sans-serif;
   align-items: center;
   font-weight: 400;
-  border-radius: 25px;
+
   cursor: pointer;
   transition: transform 0.3s ease;
   outline: none;
@@ -81,13 +81,22 @@
 
 /*button sizes*/
 
+.btn--small {
+  height: 60px;
+  width: 160px;
+  font-size: 15px;
+  border-radius: 10px;
+  
+
+}
 .btn--medium {
   height: 30px;
   width: 80px;
-  margin-top: 10px;
   float: right;
-  margin-right: 20px;
+  margin-top: 10px;
+  margin-right: 25px;
   font-size: 20px;
+  border-radius: 25px;
   
 
 }
@@ -97,5 +106,6 @@
   width: 350px;
   padding-bottom: 17px;
   font-size: 40px;
+  border-radius: 25px;
   
 }

@@ -13,7 +13,7 @@ const STYLES = [
     'btn--success--outline',
 ]
 
-const SIZES = ['btn--medium', 'btn--large'];
+const SIZES = ['btn--medium', 'btn--large', 'btn--small'];
 export const Button = ({
     children,
     type,

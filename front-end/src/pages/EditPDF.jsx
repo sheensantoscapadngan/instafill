@@ -614,23 +614,45 @@ const EditPDF = (props) => {
   let popupEdit = setupEditTextPopup()
 
   return (
-    <div >
+    <div className="body" >
         <Navbar fillerCount={props.fillerCount}/>
+        <div >
         <Document
           file={props.pdfFileUrl}
-          onLoadSuccess={onDocumentLoadSuccess}>
+          onLoadSuccess={onDocumentLoadSuccess}
+          className="document">
             <Page pageNumber={pageNumber}
               onRenderSuccess={onPageRenderSuccess}
               onLoadSuccess={onPageLoadSuccess}/>
         </Document>
-        <p>Page {pageNumber} of {numPages}</p>
-        <button onClick={nextPage}>Next</button>
-        <button onClick={prevPage}>Previous</button>
-        <button onClick={savePdf}>Download</button>
-        <button onClick={activateLineDraw}>Line</button>
-        {popupBox}
-        {popupAddText}
-        {popupEdit}
+        </div>
+        <div className="button">
+          <p>Page {pageNumber} of {numPages}</p>
+        
+          <Button 
+          type="button"
+          buttonStyle="btn--danger--solid"
+          buttonSize="btn--small" 
+          onClick={nextPage}> Next</Button>
+          <Button 
+          type="button"
+          buttonStyle="btn--danger--solid"
+          buttonSize="btn--small" 
+          onClick={prevPage}>Previous</Button>
+          <Button 
+          type="button"
+          buttonStyle="btn--danger--solid"
+          buttonSize="btn--small" 
+          onClick={savePdf}>Download</Button>
+          <Button 
+          type="button"
+          buttonStyle="btn--danger--solid"
+          buttonSize="btn--small"
+          onClick={activateLineDraw}>Line</Button>
+          {popupBox}
+          {popupAddText}
+          {popupEdit}
+        </div>
     </div>
   );
 }
