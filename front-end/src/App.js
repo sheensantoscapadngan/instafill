@@ -13,6 +13,7 @@ import EditPDF from './pages/EditPDF';
 import {UserContext} from './contexts/UserProvider.js'
 import Paypal from './services/Paypal.js'
 import {attachFillerListener} from "./services/firebase"
+import EditPdfProvider from './contexts/EditPdfProvider.js'
 
 function App(){
   const [checkOut,setCheckOut] = useState(0);
@@ -43,6 +44,7 @@ function App(){
         </div>  
       </UserProvider>
       */
+    
       <Router>
           <AnimatePresence exitBeforeEnter>
           <Switch>
@@ -53,7 +55,9 @@ function App(){
             <CreateMaster fillerCount={fillerCount}/>
           </Route>
           <Route exact path='/editPDF'>
-            <EditPDF fillerCount={fillerCount} pdfFileUrl={pdfFileUrl} pdfFile={pdfFile} apiResult={apiResult}/>  
+            <EditPdfProvider>
+              <EditPDF fillerCount={fillerCount} pdfFileUrl={pdfFileUrl} pdfFile={pdfFile} apiResult={apiResult}/>  
+            </EditPdfProvider>
           </Route>
           </Switch>
           </AnimatePresence>

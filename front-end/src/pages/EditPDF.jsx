@@ -1,20 +1,16 @@
 import {Button, Navbar} from '../components/common';
-import React, { useState,useEffect,useRef} from 'react';
+import React, { useState,useEffect,useRef,useContext} from 'react';
 import {preprocessPdf} from '../pdflib/processPdf.js'
-import {usePageNumber,useTextObjects,usePdfContext,usePdfCanvas,
-        usePdfCanvasImages,useCanvasBounds,useCanvasOffset,
-        useLineDrawState,useLineDrawObject,useLineObjects,
-        useSelectedLineIter,usePdfDims,useSelectedTextIter,
-        useAddTextPosition,useEditItem,useAddedApiResult} from '../hooks/editPdfHooks.js' 
+import {EditPdfContext} from '../contexts/EditPdfProvider.js'
+import {useTextHelper} from '../page-utilities/EditPDF/EditPDFText.js'
+import {usePositionHelper} from '../page-utilities/EditPDF/EditPDFPosition.js'
+import {useLineHelper} from '../page-utilities/EditPDF/EditPDFLine.js'
 
 import './EditPDF.css';
 import { Document, Page, pdfjs } from "react-pdf";
-import { faUsersSlash } from '@fortawesome/free-solid-svg-icons';
-import { defaultOptionListAppearanceProvider } from 'pdf-lib';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-
-class TextObject{
+export class TextObject{
   constructor(value,x,y,width,height,fontSize){
     this.value = value
     this.x = x
@@ -25,7 +21,7 @@ class TextObject{
   }
 }
 
-class LineObject{
+export class LineObject{
   constructor(start,end){
     this.start = start
     this.end = end
@@ -34,28 +30,30 @@ class LineObject{
 
 const EditPDF = (props) => {
 
-  const [numPages, setNumPages] = useState(null);
+  const {numPages, setNumPages,
+    pageNumber, setPageNumber,
+    textObjects, setTextObjects,
+    pdfContext, setPdfContext,
+    pdfCanvas, setPdfCanvas,
+    pdfCanvasImages, setPdfCanvasImages,
+    canvasBounds, setCanvasBounds,
+    canvasOffset, setCanvasOffset,
+    lineDrawState, setLineDrawState,
+    lineDrawObject, setLineDrawObject,
+    lineObjects, setLineObjects,
+    selectedLineIter, setSelectedLineIter,
+    pdfDims, setPdfDims,
+    selectedTextIter, setSelectedTextIter,
+    addTextPosition, setAddTextPosition,
+    editItem, setEditItem,
+    addedApiResult, setAddedApiResult} = useContext(EditPdfContext)
 
-  const [pageNumber, setPageNumber] = usePageNumber()
-  const [textObjects, setTextObjects] = useTextObjects()
-  const [pdfContext, setPdfContext] = usePdfContext()
-  const [pdfCanvas, setPdfCanvas] = usePdfCanvas()
-  const [pdfCanvasImages,setPdfCanvasImages] = usePdfCanvasImages()
-  const [canvasBounds,setCanvasBounds] = useCanvasBounds()
-  const [canvasOffset, setCanvasOffset] = useCanvasOffset()
-
-  //states concerning line functionalities
-  const [lineDrawState, setLineDrawState] = useLineDrawState()
-  const [lineDrawObject, setLineDrawObject] = useLineDrawObject()
-  const [lineObjects, setLineObjects] = useLineObjects()
-  const [selectedLineIter, setSelectedLineIter] = useSelectedLineIter()
-
-  const [pdfDims,setPdfDims] = usePdfDims()
-
-  const [selectedTextIter, setSelectedTextIter] = useSelectedTextIter()
-  const [addTextPosition, setAddTextPosition] = useAddTextPosition()
-  const [editItem, setEditItem] = useEditItem()
-  const [addedApiResult, setAddedApiResult] = useAddedApiResult()
+  
+  const {createTextObject,checkClickIntersection,moveTextObject,
+    editTextObject,onClickSelectedDelete,onClickSelectedIncreaseSize,
+    onClickSeletedDecreaseSize,addApiResultToTextObjects} = useTextHelper()
+  const {getNormalizedClickPositions} = usePositionHelper()
+  const {handleLineState,moveLineEnd} = useLineHelper()
 
   const addTextRef = useRef(null)
   const editTextRef = useRef(null)
@@ -94,7 +92,7 @@ const EditPDF = (props) => {
 
   useEffect(()=>{
     if(pdfContext != null && canvasBounds != null){
-      addApiResultToTextObjects()
+      addApiResultToTextObjects(props)
     }
   },[pdfContext,canvasBounds])
 
@@ -142,32 +140,6 @@ const EditPDF = (props) => {
 
   }
 
-  const addApiResultToTextObjects=()=>{
-    
-    if(addedApiResult.includes(pageNumber)){
-      //results already added to page
-      return
-    }
-
-    if(props.apiResult == null) return
-    let instafilled = props.apiResult['instafilled']
-    let pageFilled = instafilled[pageNumber]
-
-    for(let key in pageFilled){
-      let resultObj = pageFilled[key]
-      let resultValue = resultObj.value
-      let resultCoord = resultObj.position[0]
-      let normalized = normalizePosition(resultCoord[0],resultCoord[1])
-      let resultPosition = {x:normalized[0],y:normalized[1]}
-      if(resultValue != ""){
-        createTextObject(resultPosition,resultValue)
-      }
-    }
-
-    setAddedApiResult([...addedApiResult,pageNumber])
-    
-  }
-
   function removeTextLayerOffset() {
     const textLayers = document.querySelectorAll(".react-pdf__Page__textContent");
       textLayers.forEach(layer => {
@@ -201,143 +173,25 @@ const EditPDF = (props) => {
     
   } 
 
-  const pointDistance=(a,b)=>{
-    return Math.sqrt(Math.pow(a[0]-b[0],2)+Math.pow(a[1]-b[1],2))
-  }
-
-  const checkLineIntersection=(position,line)=>{
-    let DISTANCE_THRESH = 2
-    let AC = pointDistance(line.start,position)
-    let BC = pointDistance(line.end,position)
-    let AB = pointDistance(line.start,line.end)
-    return ((AC+BC)-AB < DISTANCE_THRESH)
-  }
-
-  const checkClickIntersection=(position)=>{
-
-    let localTextObjects
-
-    setTextObjects(textObjects=>{
-      localTextObjects = {...textObjects}
-      return textObjects
-    })
-
-    //check click intersection with text
-    let textObjects = localTextObjects[pageNumber]
-    let hit = false
-    for(let iter in textObjects){
-      let text = textObjects[iter]
-      hit = (position.x >= text.x && position.x <= text.x + text.width
-          && position.y >= text.y - text.height && position.y <= text.y)
-      if(hit){
-        holdState = true
-        currentHoldIter = iter
-        setSelectedTextIter(iter)
-        break
-      }
-    }
-    if(!hit){
-      setAddTextPosition(position)
-      return
-    }
-
-  }
-
-  const normalizePosition=(x,y)=>{
-    x /= canvasBounds.width
-    y /= canvasBounds.height
-    x *= pdfCanvas.width
-    y *= pdfCanvas.height
-    return [x,y]
-  }
-
-
-  const getNormalizedClickPositions=(e)=>{
-    let x = e.pageX - canvasOffset.x
-    let y = e.pageY - canvasOffset.y
-    let normalized = normalizePosition(x,y)
-    return [normalized[0],normalized[1]]
-  }
-
-
-  const checkLineHit=(position)=>{
-
-    let localLineObjects,hit = false
-
-    setLineObjects(lineObjects=>{
-      localLineObjects = {...lineObjects}
-      return lineObjects
-    })
-
-    let lineObjects = localLineObjects[pageNumber]
-
-    for(let iter in lineObjects){
-      let line = lineObjects[iter]
-      hit = checkLineIntersection(position,line)
-      if(hit){
-        holdState = true
-        currentHoldIter = iter
-        setSelectedLineIter(iter)
-        return hit
-      }
-    }
-    return hit
-  }
-
-  const handleLineState=(e)=>{
-    let drawState = false
-    let drawObject = null
-    let activated = false
-
-    setLineDrawState(lineDrawState=>{
-      drawState = lineDrawState
-      return lineDrawState
-    })
-
-    setLineDrawObject(lineDrawObject=>{
-      drawObject = lineDrawObject
-      return lineDrawObject
-    })
-
-    let pos = getNormalizedClickPositions(e)
-    if(checkLineHit(pos)){
-      //check if click hits a line
-    }
-    else if(drawState && drawObject == null){
-
-      activated = true
-      setLineDrawObject(new LineObject(pos,pos))
-
-    }else if(drawState && drawObject != null){
-
-      drawObject.end = pos
-      activated = true
-      let objects = []
-
-      setLineObjects(lineObjects=>{ 
-        if(pageNumber in lineObjects){
-          objects = lineObjects[pageNumber]
-        }
-        let newLineObjects = [...objects,drawObject]
-        return {...lineObjects,[pageNumber]:newLineObjects}
-      })
-
-      setLineDrawObject(null)
-    }
-
-    return activated
-  }
-
   const handleMouseDown=(e)=>{
     e.preventDefault()
 
-    if(handleLineState(e)){
+    let lineState = handleLineState(e,holdState,currentHoldIter)
+    holdState = lineState[1]
+    currentHoldIter = lineState[2]
+
+    console.log("LINE STATE IS",lineState)
+
+    if(lineState[0]){
       //trigger when add line option is activated
     }
     else if(e.button == 0){
       let pos = getNormalizedClickPositions(e)
       startPosition = {x:pos[0],y:pos[1]}
-      checkClickIntersection(startPosition)
+      let clickIntersection = checkClickIntersection(startPosition,holdState,currentHoldIter)
+      holdState = clickIntersection[0]
+      currentHoldIter = clickIntersection[1]
+
     }
   }
 
@@ -362,7 +216,7 @@ const EditPDF = (props) => {
     }
     else if(holdState){
       let movePosition = {x:pos[0],y:pos[1]}
-      moveTextObject(movePosition)
+      moveTextObject(movePosition,currentHoldIter)
     }
   }
 
@@ -379,47 +233,6 @@ const EditPDF = (props) => {
     pdfCanvas.addEventListener('mousemove',handleMouseMove,true)
     pdfCanvas.addEventListener('mouseup',handleMouseUp,true)
     
-  }
-
-  const moveTextObject=(movePosition)=>{
-    let objects
-    setTextObjects(textObjects=>{
-      objects = {...textObjects}
-      return textObjects
-    })
-
-    let newObjects = objects[pageNumber]
-    newObjects[currentHoldIter].x = movePosition.x
-    newObjects[currentHoldIter].y = movePosition.y
-  
-    setTextObjects({...objects,[pageNumber]:newObjects})
-  }
-
-  const moveLineEnd=(pos)=>{
-    let newObject
-    setLineDrawObject(lineDrawObject=>{
-      newObject = new LineObject(lineDrawObject.start, pos)
-      setLineDrawObject(newObject)
-    })
-
-  }
-
-  const createTextObject=(pos,textValue)=>{
-    let value = textValue
-    let width = pdfContext.measureText(value).width
-    let height = 16
-    let objects
-
-    setTextObjects(textObjects=>{
-      objects = {...textObjects}
-      let oldObjects = objects[pageNumber]
-      if(oldObjects == null){
-        oldObjects = []
-      }
-      let text = new TextObject(value,pos.x,pos.y,width,height,height)
-      return {...textObjects,[pageNumber]:[...oldObjects,text]}
-    })
-
   }
 
   const displayLine=(lineObject)=>{
@@ -497,39 +310,7 @@ const EditPDF = (props) => {
     preprocessPdf(props.pdfFile,textDicts,lineDicts)
   }
 
-  const editTextObject=(item,newValue)=>{
-    let pageObjects = {...textObjects}
-    let objects = [...pageObjects[pageNumber]]
-    objects[item].value = newValue
-    objects[item].width = pdfContext.measureText(newValue).width
-    setTextObjects({...pageObjects,[pageNumber]:objects})
-  }
 
-  const onClickSelectedDelete=()=>{
-    let pageObjects = {...textObjects}
-    let objects = [...pageObjects[pageNumber]]
-    objects.splice(selectedTextIter,1)
-    setSelectedTextIter(null)
-    setTextObjects({...pageObjects,[pageNumber]:objects}) 
-  }
-
-  const onClickSelectedIncreaseSize=()=>{
-    let pageObjects = {...textObjects}
-    let objects = [...pageObjects[pageNumber]]
-    let currentSize = objects[selectedTextIter].fontSize
-    objects[selectedTextIter].fontSize = currentSize+1
-    setTextObjects({...pageObjects,[pageNumber]:objects}) 
-  }
-
-  const onClickSeletedDecreaseSize=()=>{
-    let pageObjects = {...textObjects}
-    let objects = [...pageObjects[pageNumber]]
-    let currentSize = objects[selectedTextIter].fontSize
-    if(currentSize > 5){
-      objects[selectedTextIter].fontSize = currentSize-1
-      setTextObjects({...pageObjects,[pageNumber]:objects}) 
-    }
-  }
 
   const onClickEdit=()=>{
     setEditItem(selectedTextIter)
@@ -550,6 +331,7 @@ const EditPDF = (props) => {
   }
 
   const activateLineDraw=()=>{
+      console.log("LINE DRAW STATE ACTIVATED!")
       setLineDrawState(!lineDrawState)
   }
 
