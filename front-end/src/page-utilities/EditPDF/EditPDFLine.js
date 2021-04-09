@@ -17,7 +17,7 @@ export const useLineHelper=()=>{
     }
         
     const checkLineIntersection=(position,line)=>{
-        let DISTANCE_THRESH = 2
+        let DISTANCE_THRESH = 3
         let AC = pointDistance(line.start,position)
         let BC = pointDistance(line.end,position)
         let AB = pointDistance(line.start,line.end)
@@ -45,8 +45,8 @@ export const useLineHelper=()=>{
             return [true,holdState,currentHoldIter]
           }
         }
-        return [false,holdState,currentHoldIter]
-      }
+        return [false,holdState,currentHoldIter]  
+    }
 
     const handleLineState=(e,holdState,currentHoldIter)=>{
         let drawState = false
@@ -65,10 +65,9 @@ export const useLineHelper=()=>{
     
         let pos = getNormalizedClickPositions(e)
         let lineHit = checkLineHit(pos,holdState,currentHoldIter)
+
         holdState = lineHit[1]
         currentHoldIter = lineHit[2]
-
-        console.log("DRAW STATE IS",drawState)
 
         if(lineHit[0]){
           //check if click hits a line
@@ -106,6 +105,8 @@ export const useLineHelper=()=>{
           setLineDrawObject(newObject)
         })
     }
+
+
     
     return {checkLineHit,handleLineState,moveLineEnd}
 

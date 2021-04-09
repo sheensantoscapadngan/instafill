@@ -1,4 +1,4 @@
-import React,{useContext} from 'react'
+import React,{useContext,useRef} from 'react'
 import {EditPdfContext} from '../../contexts/EditPdfProvider.js'
 import {TextObject} from '../../pages/EditPDF'
 import {usePositionHelper} from './EditPDFPosition'
@@ -10,10 +10,15 @@ export const useTextHelper=()=>{
         pdfContext, setPdfContext,
         selectedTextIter, setSelectedTextIter,
         addTextPosition, setAddTextPosition,
-        addedApiResult, setAddedApiResult} = useContext(EditPdfContext)
+        addedApiResult, setAddedApiResult,
+        editItem, setEditItem,
+        canvasOffset, setCanvasOffset} = useContext(EditPdfContext)
     
     const {normalizePosition} = usePositionHelper()
-    
+
+    const addTextRef = useRef(null)
+    const editTextRef = useRef(null)
+
     const createTextObject=(pos,textValue)=>{
         let value = textValue
         let width = pdfContext.measureText(value).width
@@ -44,12 +49,12 @@ export const useTextHelper=()=>{
     
         for(let key in pageFilled){
           let resultObj = pageFilled[key]
-          let resultValue = resultObj.value
-          let resultCoord = resultObj.position[0]
-          let normalized = normalizePosition(resultCoord[0],resultCoord[1])
+          let {value,position} = resultObj
+
+          let normalized = normalizePosition(position[0],position[1])
           let resultPosition = {x:normalized[0],y:normalized[1]}
-          if(resultValue != ""){
-            createTextObject(resultPosition,resultValue)
+          if(value != ""){
+            createTextObject(resultPosition,value)
           }
         }
         
@@ -58,8 +63,8 @@ export const useTextHelper=()=>{
 
     const checkClickIntersection=(position,holdState,currentHoldIter)=>{
 
-        let localTextObjects
-    
+        let localTextObjects = []
+
         setTextObjects(textObjects=>{
           localTextObjects = {...textObjects}
           return textObjects
@@ -132,9 +137,84 @@ export const useTextHelper=()=>{
         }
     }
 
+    const onClickEdit=()=>{
+      setEditItem(selectedTextIter)
+    }
+  
+    const addTextTrigger=(e)=>{
+      if(e.key == 'Enter'){
+        createTextObject(addTextPosition,addTextRef.current.value)
+        setAddTextPosition(null)
+      }
+    }
+
+    const editTextTrigger=(e)=>{
+      if(e.key == 'Enter'){
+        editTextObject(editItem,editTextRef.current.value)
+        setEditItem(null)
+      }
+    }
+
+    const setupSelectedTextPopup=()=>{
+      let popup = null
+      if(selectedTextIter != null){
+  
+        let selectedItemPosX = textObjects[pageNumber][selectedTextIter].x
+        let selectedItemPosY = textObjects[pageNumber][selectedTextIter].y
+    
+        let popupBoxStyle = {
+          position:'absolute',
+          left:canvasOffset.x+selectedItemPosX+'px',
+          top:canvasOffset.y+selectedItemPosY+'px'
+        }
+        popup = <div style={popupBoxStyle}>
+                      <button onClick={onClickEdit}>Edit</button>
+                      <button onClick={onClickSelectedDelete}>Delete</button>
+                      <button onClick={onClickSeletedDecreaseSize}>Decrease</button>
+                      <button onClick={onClickSelectedIncreaseSize}>Increase</button>
+                  </div>
+      }
+      return popup
+    }
+
+    const setupAddTextPopup=()=>{
+      let popup = null
+      if(addTextPosition != null){
+        let positionX = addTextPosition.x
+        let positionY = addTextPosition.y
+        let popupStyle = {
+          position:'absolute',
+          left: positionX,
+          top: positionY
+        }
+        popup = <input ref={addTextRef} type="text" placeholder="Enter Text" style={popupStyle} onKeyDown={addTextTrigger}></input>
+      }
+      return popup
+    }
+
+    const setupEditTextPopup=()=>{
+      let popup = null
+      if(editItem != null){
+        let positionX = textObjects[pageNumber][editItem].x
+        let positionY = textObjects[pageNumber][editItem].y
+        let oldValue = textObjects[pageNumber][editItem].value
+    
+        let popupStyle = {
+          position:'absolute',
+          left:canvasOffset.x+positionX+'px',
+          top:canvasOffset.y+positionY+'px'
+        }
+        popup = <input ref={editTextRef} type="text" placeholder="Enter Text"
+                    style={popupStyle} onKeyDown={editTextTrigger} defaultValue={oldValue}></input>
+  
+      }
+      return popup
+    }
+
     return {createTextObject,checkClickIntersection,moveTextObject,
             editTextObject,onClickSelectedDelete,onClickSelectedIncreaseSize,
-            onClickSeletedDecreaseSize,addApiResultToTextObjects}
+            onClickSeletedDecreaseSize,addApiResultToTextObjects,setupAddTextPopup,addTextTrigger,
+            setupSelectedTextPopup,setupEditTextPopup}
 
 }
 

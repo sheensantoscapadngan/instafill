@@ -61,8 +61,7 @@ def match_field_to_master(field_fill_positions, master_dict, master_text_embeddi
             # handle repeating fields
             if '*_' in field:
                 field_value_dict[field] = {
-                    'value': '', 'position': box_position
-                }
+                    'value': '', 'position': box_position[0]}
                 used_lines.append(box_position)
                 continue
 
@@ -77,7 +76,7 @@ def match_field_to_master(field_fill_positions, master_dict, master_text_embeddi
             value = master_dict[max_field]
             print("MATCHING", field, "TO", value)
             field_value_dict[field] = {
-                'value': value, 'position': box_position}
+                'value': value, 'position': box_position[0]}
 
         used_lines_dict[page] = used_lines
         instafill_dict[page] = field_value_dict
