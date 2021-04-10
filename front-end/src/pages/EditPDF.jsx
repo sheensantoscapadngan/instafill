@@ -18,7 +18,7 @@ export class TextObject{
     this.width = width
     this.height = height
     this.fontSize = fontSize
-  }
+  } 
 }
 
 export class LineObject{
@@ -38,24 +38,26 @@ const EditPDF = (props) => {
     pdfCanvasImages, setPdfCanvasImages,
     canvasBounds, setCanvasBounds,
     canvasOffset, setCanvasOffset,
-    lineDrawState, setLineDrawState,
-    lineDrawObject, setLineDrawObject,
-    lineObjects, setLineObjects,
-    selectedLineIter, setSelectedLineIter,
+    lineDrawState, setLineDrawState, lineDrawStateRef,
+    lineDrawObject, setLineDrawObject, lineDrawObjectRef,
+    lineObjects, setLineObjects, lineObjectsRef,
+    selectedLineIter, setSelectedLineIter, selectedLineIterRef,
     pdfDims, setPdfDims,
-    selectedTextIter, setSelectedTextIter,
+    selectedTextIter, setSelectedTextIter, selectedTextIterRef,
     addTextPosition, setAddTextPosition,
     editItem, setEditItem,
     addedApiResult, setAddedApiResult,
-    holdState, setHoldState,
-    currentHoldIter, setCurrentHoldIter} = useContext(EditPdfContext)
-
+    holdState, setHoldState, holdStateRef,
+    currentHoldIter, setCurrentHoldIter, currentHoldIterRef,
+    initialLineClickPos, setInitialLineClickPos} = useContext(EditPdfContext)
+    
   const {checkClickIntersection,moveTextObject,
     addApiResultToTextObjects,setupAddTextPopup,
     setupSelectedTextPopup,setupEditTextPopup} = useTextHelper()
 
   const {getNormalizedClickPositions} = usePositionHelper()
-  const {handleLineState,moveLineEnd,setupPopupLineBox} = useLineHelper()
+  const {handleLineState,moveLineEnd,setupPopupLineBox,
+         moveLineObject} = useLineHelper()
 
   let startPosition = {x:0,y:0}
 
@@ -189,45 +191,23 @@ const EditPDF = (props) => {
   const handleMouseMove=(e)=>{
     e.preventDefault()
     let pos = getNormalizedClickPositions(e)
-    let lineDrawObject = null
-    let lineDrawState = false
-    let holdState = false
-    let holdIter = null
+    let objects = []
 
-    setLineDrawObject(object=>{
-      lineDrawObject = object
-      return object
-    })
+    objects = lineObjectsRef.current
 
-    setLineDrawState(state=>{
-      lineDrawState = state
-      return state
-    })
-
-    setHoldState(state=>{
-      holdState = state
-      return state
-    })
-
-    setCurrentHoldIter(currentHoldIter=>{
-      holdIter = currentHoldIter
-      return currentHoldIter
-    })
-    
-    if(lineDrawState && lineDrawObject != null){
+    if(lineDrawStateRef.current && lineDrawObjectRef.current != null){
       moveLineEnd(pos)
     }
 
-    else if(holdState){
+    else if(holdStateRef.current){
       let movePosition = {x:pos[0],y:pos[1]}
-      if(selectedLineIter != null){
-        
-      }else{
-        moveTextObject(movePosition,holdIter)
+      if(selectedLineIterRef.current != null){
+        moveLineObject(movePosition,currentHoldIterRef.current,objects)
+      }else if(selectedTextIterRef.current != null){
+        moveTextObject(movePosition,currentHoldIterRef.current)
       }
     }
   }
-
 
   const handleMouseUp=(e)=>{
     e.preventDefault()
@@ -236,11 +216,9 @@ const EditPDF = (props) => {
   }
 
   const attachMouseListeners=()=>{
-
     pdfCanvas.addEventListener('mousedown',handleMouseDown,true)
     pdfCanvas.addEventListener('mousemove',handleMouseMove,true)
     pdfCanvas.addEventListener('mouseup',handleMouseUp,true)
-    
   }
 
   const displayLine=(lineObject)=>{
@@ -252,11 +230,9 @@ const EditPDF = (props) => {
 
   const displayObjects=()=>{
     let canvasImg = pdfCanvasImages[pageNumber]
-  
     if(canvasImg == null) return
     pdfContext.clearRect(0, 0, pdfCanvas.width, pdfCanvas.height)
     pdfContext.drawImage(canvasImg,0,0,pdfCanvas.width,pdfCanvas.height)
-
     if(lineDrawObject != null){
       displayLine(lineDrawObject)
     } 
@@ -315,14 +291,11 @@ const EditPDF = (props) => {
       }
       lineDicts[pageIter] = pageObjects
     }
-
     preprocessPdf(props.pdfFile,textDicts,lineDicts)
   }
 
-  const activateLineDraw=()=>{
-      setLineDrawState(!lineDrawState)
-  }
-
+  const activateLineDraw=()=>setLineDrawState(!lineDrawState)
+  
   let popupTextBox = setupSelectedTextPopup()
   let popupTextAdd = setupAddTextPopup()
   let popupTextEdit = setupEditTextPopup()

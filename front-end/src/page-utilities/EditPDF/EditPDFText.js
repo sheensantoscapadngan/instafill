@@ -6,7 +6,7 @@ import {usePositionHelper} from './EditPDFPosition'
 export const useTextHelper=()=>{
     const {numPages, setNumPages,
         pageNumber, setPageNumber,
-        textObjects, setTextObjects,
+        textObjects, setTextObjects, textObjectsRef,
         pdfContext, setPdfContext,
         selectedTextIter, setSelectedTextIter,
         addTextPosition, setAddTextPosition,
@@ -25,17 +25,13 @@ export const useTextHelper=()=>{
         let value = textValue
         let width = pdfContext.measureText(value).width
         let height = 16
-        let objects
-    
-        setTextObjects(textObjects=>{
-          objects = {...textObjects}
-          let oldObjects = objects[pageNumber]
-          if(oldObjects == null){
-            oldObjects = []
-          }
-          let text = new TextObject(value,pos.x,pos.y,width,height,height)
-          return {...textObjects,[pageNumber]:[...oldObjects,text]}
-        })
+        let objects = textObjectsRef.current
+        let oldObjects = objects[pageNumber]
+        if(oldObjects == null){
+          oldObjects = []
+        }
+        let text = new TextObject(value,pos.x,pos.y,width,height,height)
+        setTextObjects({...textObjects,[pageNumber]:[...oldObjects,text]}) 
     }
 
     const addApiResultToTextObjects=(props)=>{
@@ -64,14 +60,7 @@ export const useTextHelper=()=>{
     }
 
     const checkClickIntersection=(position)=>{
-
-        let localTextObjects = []
-
-        setTextObjects(textObjects=>{
-          localTextObjects = {...textObjects}
-          return textObjects
-        })
-    
+        let localTextObjects = textObjectsRef.current
         let textObjects = localTextObjects[pageNumber]
         let hit = false
         for(let iter in textObjects){
@@ -92,19 +81,10 @@ export const useTextHelper=()=>{
     }
 
     const moveTextObject=(movePosition,currentHoldIter)=>{
-
-        console.log("CURRENT HOLD ITER IS",currentHoldIter)
-        
-        let objects
-        setTextObjects(textObjects=>{
-          objects = {...textObjects}
-          return textObjects
-        })
-    
+        let objects = textObjectsRef.current
         let newObjects = objects[pageNumber]
         newObjects[currentHoldIter].x = movePosition.x
         newObjects[currentHoldIter].y = movePosition.y
-      
         setTextObjects({...objects,[pageNumber]:newObjects})
     }
 
@@ -142,10 +122,8 @@ export const useTextHelper=()=>{
         }
     }
 
-    const onClickEdit=()=>{
-      setEditItem(selectedTextIter)
-    }
-  
+    const onClickEdit=()=>setEditItem(selectedTextIter)
+   
     const addTextTrigger=(e)=>{
       if(e.key == 'Enter'){
         createTextObject(addTextPosition,addTextRef.current.value)
