@@ -46,18 +46,18 @@ const EditPDF = (props) => {
     selectedTextIter, setSelectedTextIter,
     addTextPosition, setAddTextPosition,
     editItem, setEditItem,
-    addedApiResult, setAddedApiResult} = useContext(EditPdfContext)
+    addedApiResult, setAddedApiResult,
+    holdState, setHoldState,
+    currentHoldIter, setCurrentHoldIter} = useContext(EditPdfContext)
 
   const {checkClickIntersection,moveTextObject,
     addApiResultToTextObjects,setupAddTextPopup,
     setupSelectedTextPopup,setupEditTextPopup} = useTextHelper()
 
   const {getNormalizedClickPositions} = usePositionHelper()
-  const {handleLineState,moveLineEnd} = useLineHelper()
+  const {handleLineState,moveLineEnd,setupPopupLineBox} = useLineHelper()
 
   let startPosition = {x:0,y:0}
-  let holdState = false
-  let currentHoldIter = null
 
   useEffect(()=>{
     if(pdfCanvas != null){
@@ -173,29 +173,26 @@ const EditPDF = (props) => {
   const handleMouseDown=(e)=>{
     e.preventDefault()
 
-    let lineState = handleLineState(e,holdState,currentHoldIter)
-    holdState = lineState[1]
-    currentHoldIter = lineState[2]
-
-    if(lineState[0]){
+    let lineState = handleLineState(e)
+    if(lineState){
       //trigger when line option is activated
     }
-
+    
     else if(e.button == 0){
       let pos = getNormalizedClickPositions(e)
       startPosition = {x:pos[0],y:pos[1]}
-      let clickIntersection = checkClickIntersection(startPosition,holdState,currentHoldIter)
-      holdState = clickIntersection[0]
-      currentHoldIter = clickIntersection[1]
-
+      checkClickIntersection(startPosition)
     }
-  }
 
+  }
+  
   const handleMouseMove=(e)=>{
     e.preventDefault()
     let pos = getNormalizedClickPositions(e)
     let lineDrawObject = null
     let lineDrawState = false
+    let holdState = false
+    let holdIter = null
 
     setLineDrawObject(object=>{
       lineDrawObject = object
@@ -206,6 +203,16 @@ const EditPDF = (props) => {
       lineDrawState = state
       return state
     })
+
+    setHoldState(state=>{
+      holdState = state
+      return state
+    })
+
+    setCurrentHoldIter(currentHoldIter=>{
+      holdIter = currentHoldIter
+      return currentHoldIter
+    })
     
     if(lineDrawState && lineDrawObject != null){
       moveLineEnd(pos)
@@ -213,15 +220,19 @@ const EditPDF = (props) => {
 
     else if(holdState){
       let movePosition = {x:pos[0],y:pos[1]}
-      moveTextObject(movePosition,currentHoldIter)
+      if(selectedLineIter != null){
+        
+      }else{
+        moveTextObject(movePosition,holdIter)
+      }
     }
   }
 
 
   const handleMouseUp=(e)=>{
     e.preventDefault()
-    holdState = false
-    currentHoldIter = null
+    setHoldState(false)
+    setCurrentHoldIter(null)
   }
 
   const attachMouseListeners=()=>{
@@ -312,9 +323,11 @@ const EditPDF = (props) => {
       setLineDrawState(!lineDrawState)
   }
 
-  let popupBox = setupSelectedTextPopup()
-  let popupAddText = setupAddTextPopup()
-  let popupEdit = setupEditTextPopup()
+  let popupTextBox = setupSelectedTextPopup()
+  let popupTextAdd = setupAddTextPopup()
+  let popupTextEdit = setupEditTextPopup()
+
+  let popupLineBox = setupPopupLineBox()
 
   return (
     <div className="body" >
@@ -352,10 +365,11 @@ const EditPDF = (props) => {
           buttonStyle="btn--danger--solid"
           buttonSize="btn--small"
           onClick={activateLineDraw}>Line</Button>
-          {popupBox}
-          {popupAddText}
-          {popupEdit}
         </div>
+        {popupTextBox}
+        {popupTextAdd}
+        {popupTextEdit}
+        {popupLineBox} 
     </div>
   );
 }

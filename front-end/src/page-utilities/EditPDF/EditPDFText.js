@@ -12,7 +12,9 @@ export const useTextHelper=()=>{
         addTextPosition, setAddTextPosition,
         addedApiResult, setAddedApiResult,
         editItem, setEditItem,
-        canvasOffset, setCanvasOffset} = useContext(EditPdfContext)
+        canvasOffset, setCanvasOffset,
+        holdState, setHoldState,
+        currentHoldIter, setCurrentHoldIter} = useContext(EditPdfContext)
     
     const {normalizePosition} = usePositionHelper()
 
@@ -61,7 +63,7 @@ export const useTextHelper=()=>{
         setAddedApiResult([...addedApiResult,pageNumber])
     }
 
-    const checkClickIntersection=(position,holdState,currentHoldIter)=>{
+    const checkClickIntersection=(position)=>{
 
         let localTextObjects = []
 
@@ -77,19 +79,22 @@ export const useTextHelper=()=>{
           hit = (position.x >= text.x && position.x <= text.x + text.width
               && position.y >= text.y - text.height && position.y <= text.y)
           if(hit){
-            holdState = true
-            currentHoldIter = iter
+            setHoldState(true)
+            setCurrentHoldIter(iter)
             setSelectedTextIter(iter)
-            return [holdState,currentHoldIter]
+            return
           }
         }
         if(!hit){
           setAddTextPosition(position)
-          return [holdState, currentHoldIter]
+          return 
         }
     }
 
     const moveTextObject=(movePosition,currentHoldIter)=>{
+
+        console.log("CURRENT HOLD ITER IS",currentHoldIter)
+        
         let objects
         setTextObjects(textObjects=>{
           objects = {...textObjects}

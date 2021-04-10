@@ -8,7 +8,10 @@ export const useLineHelper=()=>{
         lineDrawState, setLineDrawState,
         lineDrawObject, setLineDrawObject,
         lineObjects, setLineObjects,
-        selectedLineIter, setSelectedLineIter} = useContext(EditPdfContext)
+        selectedLineIter, setSelectedLineIter,
+        canvasOffset,
+        holdState, setHoldState,
+        currentHoldIter, setCurrentHoldIter} = useContext(EditPdfContext)
     
     const {getNormalizedClickPositions} = usePositionHelper()
 
@@ -17,14 +20,14 @@ export const useLineHelper=()=>{
     }
         
     const checkLineIntersection=(position,line)=>{
-        let DISTANCE_THRESH = 3
+        let DISTANCE_THRESH = 3.2
         let AC = pointDistance(line.start,position)
         let BC = pointDistance(line.end,position)
         let AB = pointDistance(line.start,line.end)
         return ((AC+BC)-AB < DISTANCE_THRESH)
     }
 
-    const checkLineHit=(position,holdState,currentHoldIter)=>{
+    const checkLineHit=(position)=>{
 
         let localLineObjects,hit = false
     
@@ -39,16 +42,16 @@ export const useLineHelper=()=>{
           let line = lineObjects[iter]
           hit = checkLineIntersection(position,line)
           if(hit){
-            holdState = true
-            currentHoldIter = iter
+            setHoldState(true)
+            setCurrentHoldIter(iter)
             setSelectedLineIter(iter)
-            return [true,holdState,currentHoldIter]
+            return true
           }
         }
-        return [false,holdState,currentHoldIter]  
+        return false
     }
 
-    const handleLineState=(e,holdState,currentHoldIter)=>{
+    const handleLineState=(e)=>{
         let drawState = false
         let drawObject = null
         let activated = false
@@ -64,12 +67,9 @@ export const useLineHelper=()=>{
         })
     
         let pos = getNormalizedClickPositions(e)
-        let lineHit = checkLineHit(pos,holdState,currentHoldIter)
+        let lineHit = checkLineHit(pos)
 
-        holdState = lineHit[1]
-        currentHoldIter = lineHit[2]
-
-        if(lineHit[0]){
+        if(lineHit){
           //check if click hits a line
           activated = true
         }
@@ -94,9 +94,10 @@ export const useLineHelper=()=>{
     
           setLineDrawObject(null)
         }
-    
-        return [activated,holdState,currentHoldIter]
+
+        return activated
       }
+
 
     const moveLineEnd=(pos)=>{
         let newObject
@@ -106,8 +107,33 @@ export const useLineHelper=()=>{
         })
     }
 
+    const onClickSelectedLineDelete=()=>{
+      let pageObjects = {...lineObjects}
+      let objects = [...pageObjects[pageNumber]]
+      objects.splice(selectedLineIter,1)
+      setSelectedLineIter(null)
+      setLineObjects({...pageObjects,[pageNumber]:objects}) 
 
-    
-    return {checkLineHit,handleLineState,moveLineEnd}
+    }
+
+    const setupPopupLineBox=()=>{
+
+      let popup = null
+      if(selectedLineIter != null){
+        let selectedItemPosX = lineObjects[pageNumber][selectedLineIter].start[0]
+        let selectedItemPosY = lineObjects[pageNumber][selectedLineIter].start[1]    
+        let popupBoxStyle = {
+          position:'absolute',
+          left:canvasOffset.x+selectedItemPosX+'px',
+          top:canvasOffset.y+selectedItemPosY+'px'
+        }
+        popup = <div style={popupBoxStyle}>
+                      <button onClick={onClickSelectedLineDelete}>Delete</button>
+                  </div>
+      }
+      return popup
+    }
+
+    return {checkLineHit,handleLineState,moveLineEnd,setupPopupLineBox}
 
 }

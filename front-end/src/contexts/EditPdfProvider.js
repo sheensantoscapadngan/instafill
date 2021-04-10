@@ -22,6 +22,8 @@ export default ({children}) => {
     const [editItem, setEditItem] = useState(null)
     const [addedApiResult, setAddedApiResult] = useState([])
 
+    const [holdState, setHoldState] = useState(false)
+    const [currentHoldIter, setCurrentHoldIter] = useState(null)
 
     const editPdfHooks = {numPages, setNumPages,
                         pageNumber, setPageNumber,
@@ -39,7 +41,9 @@ export default ({children}) => {
                         selectedTextIter, setSelectedTextIter,
                         addTextPosition, setAddTextPosition,
                         editItem, setEditItem,
-                        addedApiResult, setAddedApiResult}
+                        addedApiResult, setAddedApiResult,
+                        holdState, setHoldState,
+                        currentHoldIter, setCurrentHoldIter}
 
     return (
         <EditPdfContext.Provider value={editPdfHooks}>{children}</EditPdfContext.Provider>
