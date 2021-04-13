@@ -12,6 +12,14 @@ export const usePositionHelper=()=>{
         return [x,y]
     }
 
+    const denormalizePosition=(x,y)=>{
+        x /= pdfCanvas.width
+        y /= pdfCanvas.height
+        x *= canvasBounds.width
+        y *= canvasBounds.height
+        return [x,y]
+    }
+
     const getNormalizedClickPositions=(e)=>{
         let x = e.pageX - canvasOffset.x
         let y = e.pageY - canvasOffset.y
@@ -19,6 +27,6 @@ export const usePositionHelper=()=>{
         return [normalized[0],normalized[1]]
     }
 
-    return {normalizePosition, getNormalizedClickPositions}
+    return {normalizePosition, getNormalizedClickPositions,denormalizePosition}
 
 }

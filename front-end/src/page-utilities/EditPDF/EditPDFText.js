@@ -16,7 +16,7 @@ export const useTextHelper=()=>{
         holdState, setHoldState,
         currentHoldIter, setCurrentHoldIter} = useContext(EditPdfContext)
     
-    const {normalizePosition} = usePositionHelper()
+    const {normalizePosition,denormalizePosition} = usePositionHelper()
 
     const addTextRef = useRef(null)
     const editTextRef = useRef(null)
@@ -141,14 +141,15 @@ export const useTextHelper=()=>{
     const setupSelectedTextPopup=()=>{
       let popup = null
       if(selectedTextIter != null){
-  
+
         let selectedItemPosX = textObjects[pageNumber][selectedTextIter].x
         let selectedItemPosY = textObjects[pageNumber][selectedTextIter].y
-    
+        let denormalized = denormalizePosition(selectedItemPosX, selectedItemPosY)
+      
         let popupBoxStyle = {
           position:'absolute',
-          left:canvasOffset.x+selectedItemPosX+'px',
-          top:canvasOffset.y+selectedItemPosY+'px'
+          left:denormalized[0]+4+canvasOffset.x+'px',
+          top:denormalized[1]+4+canvasOffset.y+'px'
         }
         popup = <div style={popupBoxStyle}>
                       <button onClick={onClickEdit}>Edit</button>
@@ -165,10 +166,11 @@ export const useTextHelper=()=>{
       if(addTextPosition != null){
         let positionX = addTextPosition.x
         let positionY = addTextPosition.y
+        let denormalized = denormalizePosition(positionX,positionY)
         let popupStyle = {
           position:'absolute',
-          left: positionX,
-          top: positionY
+          left:denormalized[0]-3+canvasOffset.x+'px',
+          top:denormalized[1]-3+canvasOffset.y+'px'
         }
         popup = <input ref={addTextRef} type="text" placeholder="Enter Text" style={popupStyle} onKeyDown={addTextTrigger}></input>
       }
@@ -181,11 +183,11 @@ export const useTextHelper=()=>{
         let positionX = textObjects[pageNumber][editItem].x
         let positionY = textObjects[pageNumber][editItem].y
         let oldValue = textObjects[pageNumber][editItem].value
-    
+        let denormalized = denormalizePosition(positionX,positionY)
         let popupStyle = {
           position:'absolute',
-          left:canvasOffset.x+positionX+'px',
-          top:canvasOffset.y+positionY+'px'
+          left:denormalized[0]-3+canvasOffset.x+'px',
+          top:denormalized[1]-3+canvasOffset.y+'px'
         }
         popup = <input ref={editTextRef} type="text" placeholder="Enter Text"
                     style={popupStyle} onKeyDown={editTextTrigger} defaultValue={oldValue}></input>

@@ -42,8 +42,8 @@ const EditPDF = (props) => {
     lineDrawObject, setLineDrawObject, lineDrawObjectRef,
     lineObjects, setLineObjects, lineObjectsRef,
     selectedLineIter, setSelectedLineIter, selectedLineIterRef,
-    pdfDims, setPdfDims,
     selectedTextIter, setSelectedTextIter, selectedTextIterRef,
+    pdfDims, setPdfDims,
     addTextPosition, setAddTextPosition,
     editItem, setEditItem,
     addedApiResult, setAddedApiResult,
@@ -99,6 +99,7 @@ const EditPDF = (props) => {
     if(selectedTextIter != null){
       setAddTextPosition(null)
       setEditItem(null)
+      setSelectedLineIter(null)
     }
   },[selectedTextIter])
 
@@ -113,8 +114,24 @@ const EditPDF = (props) => {
     if(addTextPosition != null){
       setEditItem(null)
       setSelectedTextIter(null)
+      setSelectedLineIter(null)
     }
   },[addTextPosition])
+
+  useEffect(()=>{
+    if(selectedLineIter != null){
+      setEditItem(null)
+      setSelectedTextIter(null)
+      setAddTextPosition(null)
+    }
+  },[selectedLineIter])
+
+  useEffect(()=>{
+    if(lineDrawObject != null){
+      disablePdfPopup()
+    }
+  },[lineDrawObject])
+
 
   const onDocumentLoadSuccess=({ numPages })=>{
     setNumPages(numPages);
@@ -154,22 +171,23 @@ const EditPDF = (props) => {
       setPdfDims([width,height])
   }
 
+  const disablePdfPopup=()=>{
+    setSelectedTextIter(null)
+    setEditItem(null)
+    setAddTextPosition(null)
+    setSelectedLineIter(null)
+  }
+
   const nextPage=()=>{
     if(pageNumber+1 <= numPages)
       setPageNumber(pageNumber+1)
-      setSelectedTextIter(null)
-      setEditItem(null)
-      setAddTextPosition(null)
-    
+      disablePdfPopup()
   }
   
   const prevPage=()=>{
     if(pageNumber-1 > 0)
       setPageNumber(pageNumber-1)
-      setSelectedTextIter(null)
-      setEditItem(null)
-      setAddTextPosition(null)
-    
+      disablePdfPopup()
   } 
 
   const handleMouseDown=(e)=>{
@@ -179,7 +197,7 @@ const EditPDF = (props) => {
     if(lineState){
       //trigger when line option is activated
     }
-    
+  
     else if(e.button == 0){
       let pos = getNormalizedClickPositions(e)
       startPosition = {x:pos[0],y:pos[1]}
@@ -191,9 +209,7 @@ const EditPDF = (props) => {
   const handleMouseMove=(e)=>{
     e.preventDefault()
     let pos = getNormalizedClickPositions(e)
-    let objects = []
-
-    objects = lineObjectsRef.current
+    let objects = lineObjectsRef.current || []
 
     if(lineDrawStateRef.current && lineDrawObjectRef.current != null){
       moveLineEnd(pos)
@@ -219,6 +235,15 @@ const EditPDF = (props) => {
     pdfCanvas.addEventListener('mousedown',handleMouseDown,true)
     pdfCanvas.addEventListener('mousemove',handleMouseMove,true)
     pdfCanvas.addEventListener('mouseup',handleMouseUp,true)
+  }
+
+  const outsideCanvasClick=(e)=>{
+    let pos =  getNormalizedClickPositions(e)
+    //out of canvas bounds
+    if(pos[0] > pdfCanvas.width || pos[1] > pdfCanvas.width || 
+        pos[0] < 0 || pos[1] < 0){
+      disablePdfPopup()
+    }
   }
 
   const displayLine=(lineObject)=>{
@@ -302,8 +327,9 @@ const EditPDF = (props) => {
 
   let popupLineBox = setupPopupLineBox()
 
+  
   return (
-    <div className="body" >
+    <div className="body">
         <Navbar fillerCount={props.fillerCount}/>
         <div >
         <Document

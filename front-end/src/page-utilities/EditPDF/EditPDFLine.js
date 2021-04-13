@@ -14,7 +14,7 @@ export const useLineHelper=()=>{
         currentHoldIter, setCurrentHoldIter,
         initialLineClickPos, setInitialLineClickPos, initialLineClickPosRef} = useContext(EditPdfContext)
     
-    const {getNormalizedClickPositions} = usePositionHelper()
+    const {getNormalizedClickPositions,denormalizePosition} = usePositionHelper()
 
     const pointDistance=(a,b)=>{
         return Math.sqrt(Math.pow(a[0]-b[0],2)+Math.pow(a[1]-b[1],2))
@@ -55,6 +55,7 @@ export const useLineHelper=()=>{
           //check if click hits a line
           activated = true
         }
+        
         else if(lineDrawStateRef.current && lineDrawObjectRef.current == null){
           activated = true
           setLineDrawObject(new LineObject(pos,pos))
@@ -67,6 +68,7 @@ export const useLineHelper=()=>{
           setLineObjects({...lineObjects,[pageNumber]:newLineObjects})
           setLineDrawObject(null)
         }
+
         return activated
     }
 
@@ -78,17 +80,20 @@ export const useLineHelper=()=>{
 
     const calculateLineMoveOffset=(movePosition)=>{
       let initialLineClickPos = initialLineClickPosRef.current
-      setInitialLineClickPos(movePosition)
-      return {x:movePosition.x-initialLineClickPos[0],y:movePosition.y-initialLineClickPos[1]}
+      let moveOffset = {x:movePosition.x-initialLineClickPos[0],y:movePosition.y-initialLineClickPos[1]}
+      setInitialLineClickPos([movePosition.x, movePosition.y])
+      return moveOffset
     }
 
     const moveLineObject=(movePosition,holdIter,objects)=>{
       let moveOffset = calculateLineMoveOffset(movePosition)
-      let newObjects = objects[pageNumber]
+      let newObjects = [...objects[pageNumber]]
       let object = newObjects[holdIter]
+
       if(isNaN(object.start[0])) return
       newObjects[holdIter].start = [object.start[0]+moveOffset.x,object.start[1]+moveOffset.y]
       newObjects[holdIter].end = [object.end[0]+moveOffset.x,object.end[1]+moveOffset.y]
+
       let newLineObjects = {...objects,[pageNumber]:newObjects}
       setLineObjects(newLineObjects)
     }
@@ -107,10 +112,11 @@ export const useLineHelper=()=>{
       if(selectedLineIter != null){
         let selectedItemPosX = lineObjects[pageNumber][selectedLineIter].start[0]
         let selectedItemPosY = lineObjects[pageNumber][selectedLineIter].start[1]    
+        let denormalized = denormalizePosition(selectedItemPosX,selectedItemPosY)
         let popupBoxStyle = {
           position:'absolute',
-          left:canvasOffset.x+selectedItemPosX+'px',
-          top:canvasOffset.y+selectedItemPosY+'px'
+          left:canvasOffset.x+denormalized[0]+'px',
+          top:canvasOffset.y+denormalized[1]+'px'
         }
         popup = <div style={popupBoxStyle}>
                       <button onClick={onClickSelectedLineDelete}>Delete</button>
